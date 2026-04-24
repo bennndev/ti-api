@@ -1,0 +1,34 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+      },
+      "enabled": true
+    },
+    "prisma-local": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "prisma",
+        "mcp"
+      ],
+      "enabled": true
+    },
+    "clerk": {
+      "type": "remote",
+      "url": "https://mcp.clerk.com/mcp",
+      "command":  
+      [
+        "npx",
+        "-y",
+        "mcp"
+      ],
+      "enabled" : true
+    }
+  }
+}
