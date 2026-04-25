@@ -13,7 +13,7 @@ async function bootstrap() {
 
   // Mount Better Auth routes on /auth/* BEFORE express.json()
   const expressApp = app.getHttpAdapter().getInstance();
-  expressApp.all('/auth/*', toNodeHandler(auth));
+  expressApp.all('/auth/{*splat}', toNodeHandler(auth));
 
   const config = new DocumentBuilder()
     .setTitle('ti-api')
