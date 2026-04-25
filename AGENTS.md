@@ -1,6 +1,6 @@
 # ti-api
 
-NestJS v11 + TypeScript + Prisma + PostgreSQL + Clerk auth.
+NestJS v11 + TypeScript + Prisma + PostgreSQL + Better Auth.
 
 ## Dev commands
 
@@ -26,7 +26,9 @@ npm run test:e2e    # jest e2e (test/)
 
 Required env vars (see `.env.example`):
 - `DATABASE_URL` — PostgreSQL connection string for Prisma
-- `CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` — Clerk auth
+- `BETTER_AUTH_URL` — Base URL for Better Auth (e.g., http://localhost:3000)
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — Google OAuth
+- `APPLE_CLIENT_ID`, `APPLE_TEAM_ID`, `APPLE_KEY_ID`, `APPLE_PRIVATE_KEY` — Apple OAuth
 
 Env is loaded via `dotenv/config` in `prisma.config.ts` and likely `main.ts`.
 
