@@ -4,7 +4,7 @@ import { PrismaClient } from '@/generated/prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
 
 const prisma = new PrismaClient({
-  adapter: new PrismaNeon({ connectionString: process.env.DIRECT_URL! }),
+  adapter: new PrismaNeon({ connectionString: process.env.DATABASE_URL! }),
 });
 
 export const auth = betterAuth({
@@ -28,14 +28,14 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
-      orgId: { type: 'number' },
-      roleId: { type: 'number' },
-      username: { type: 'string' },
-      documentType: { type: 'string' },
-      documentNumber: { type: 'string' },
-      firstName: { type: 'string' },
-      lastName: { type: 'string' },
-      preferredLanguage: { type: 'string' },
+      orgId: { type: 'number', required: false },
+      roleId: { type: 'number', required: false },
+      username: { type: 'string', required: false },
+      documentType: { type: 'string', required: false },
+      documentNumber: { type: 'string', required: false },
+      firstName: { type: 'string', required: false },
+      lastName: { type: 'string', required: false },
+      preferredLanguage: { type: 'string', required: false },
     },
   },
 });
