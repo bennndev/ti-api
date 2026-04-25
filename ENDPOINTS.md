@@ -137,6 +137,169 @@ Base URL: `http://localhost:3000`
 
 ---
 
+## GET /organizations
+
+**Descripción:** Listar organizaciones (paginadas)
+
+**Headers:**
+- `Cookie: better-auth.session_token=<token>` (requerido)
+
+**Query params:**
+- `page` — número de página (default: 1)
+- `pageSize` — ítems por página (default: 20)
+- `status` — `true` para activas, `false` para inactivas (opcional)
+
+**Respuesta (200):**
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "string",
+      "slug": "string",
+      "ruc": "string",
+      "logo": "string",
+      "country": "string",
+      "status": true,
+      "createdAt": "string (ISO date)",
+      "updatedAt": "string (ISO date)"
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "pageSize": 20,
+    "total": 100,
+    "totalPages": 5
+  }
+}
+```
+
+---
+
+## POST /organizations
+
+**Descripción:** Crear nueva organización
+
+**Headers:**
+- `Cookie: better-auth.session_token=<token>` (requerido)
+- `Content-Type: application/json`
+
+**Body (JSON):**
+```json
+{
+  "name": "string (required, 1-25 chars)",
+  "ruc": "string (required, 1-20 chars)",
+  "country": "string (required, 1-48 chars)",
+  "logo": "string (optional, max 255 chars)"
+}
+```
+
+**Respuesta (201):**
+```json
+{
+  "id": 1,
+  "name": "string",
+  "slug": "string (generado desde name)",
+  "ruc": "string",
+  "logo": "string",
+  "country": "string",
+  "status": true,
+  "createdAt": "string (ISO date)",
+  "updatedAt": "string (ISO date)"
+}
+```
+
+**Errores:**
+- `400` — Body inválido
+- `401` — Sin sesión activa
+- `409` — `name` o `ruc` ya existen
+
+---
+
+## GET /organizations/:id
+
+**Descripción:** Obtener organización por ID
+
+**Headers:**
+- `Cookie: better-auth.session_token=<token>` (requerido)
+
+**Respuesta (200):**
+```json
+{
+  "id": 1,
+  "name": "string",
+  "slug": "string",
+  "ruc": "string",
+  "logo": "string",
+  "country": "string",
+  "status": true,
+  "createdAt": "string (ISO date)",
+  "updatedAt": "string (ISO date)"
+}
+```
+
+**Errores:**
+- `401` — Sin sesión activa
+- `404` — Organización no encontrada
+
+---
+
+## PATCH /organizations/:id
+
+**Descripción:** Actualizar organización parcialmente
+
+**Headers:**
+- `Cookie: better-auth.session_token=<token>` (requerido)
+- `Content-Type: application/json`
+
+**Body (JSON):**
+```json
+{
+  "name": "string (optional, 1-25 chars)",
+  "logo": "string (optional)",
+  "country": "string (optional)",
+  "status": "boolean (optional)"
+}
+```
+
+**Respuesta (200):**
+```json
+{
+  "id": 1,
+  "name": "string",
+  "slug": "string",
+  "ruc": "string",
+  "logo": "string",
+  "country": "string",
+  "status": true,
+  "createdAt": "string (ISO date)",
+  "updatedAt": "string (ISO date)"
+}
+```
+
+**Errores:**
+- `400` — Body inválido
+- `401` — Sin sesión activa
+- `404` — Organización no encontrada
+- `409` — `name` ya existe en otra organización
+
+---
+
+## DELETE /organizations/:id
+
+**Descripción:** Soft-delete de organización (no elimina, marca `deletedAt`)
+
+**Headers:**
+- `Cookie: better-auth.session_token=<token>` (requerido)
+
+**Respuesta (204):** No Content
+
+**Errores:**
+- `401` — Sin sesión activa
+- `404` — Organización no encontrada
+
+---
+
 ## Configuración
 
 ### OAuth automático
@@ -190,3 +353,8 @@ BETTER_AUTH_URL=http://localhost:3000
 | GET | `/auth/google/callback` | Callback OAuth Google |
 | GET | `/auth/apple` | Redirect OAuth Apple |
 | GET | `/auth/apple/callback` | Callback OAuth Apple |
+| GET | `/organizations` | Listar organizaciones (paginadas) |
+| POST | `/organizations` | Crear organización |
+| GET | `/organizations/:id` | Obtener organización por ID |
+| PATCH | `/organizations/:id` | Actualizar organización |
+| DELETE | `/organizations/:id` | Soft-delete organización |
