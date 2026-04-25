@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { OrganizationModule } from './modules/organization/organization.module';
+import { UsersModule } from './modules/users/users.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthGuard } from './guards/auth.guard';
@@ -17,6 +19,12 @@ import { RolesGuard } from './guards/roles.guard';
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
-  imports: [AuthModule, OrganizationModule, PrismaModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    AuthModule,
+    OrganizationModule,
+    UsersModule,
+    PrismaModule,
+  ],
 })
 export class AppModule {}

@@ -6,11 +6,6 @@ import { Prisma, Organization } from '@/generated/prisma/client';
 export class OrganizationRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  private readonly include = {
-    departments: { select: { id: true } },
-    users: { select: { id: true } },
-  };
-
   async findMany(params: {
     skip?: number;
     take?: number;
@@ -30,7 +25,6 @@ export class OrganizationRepository {
         take,
         where: whereClause,
         orderBy: orderBy ?? { createdAt: 'desc' },
-        include: { _count: { select: { departments: true, users: true } } },
       }),
       this.prisma.organization.count({ where: whereClause }),
     ]);
@@ -41,14 +35,18 @@ export class OrganizationRepository {
   async findById(id: number): Promise<Organization | null> {
     return this.prisma.organization.findFirst({
       where: { id, deletedAt: null },
-      include: { _count: { select: { departments: true, users: true } } },
     });
   }
 
   async findBySlug(slug: string): Promise<Organization | null> {
     return this.prisma.organization.findUnique({
       where: { slug },
-      include: { _count: { select: { departments: true, users: true } } },
+    });
+  }
+
+  async findByRuc(ruc: string): Promise<Organization | null> {
+    return this.prisma.organization.findFirst({
+      where: { ruc, deletedAt: null },
     });
   }
 

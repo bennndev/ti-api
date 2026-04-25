@@ -9,6 +9,10 @@ export const organizationResponseSchema = z.object({
   logo: z.string(),
   country: z.string(),
   status: z.boolean(),
+  lastActivityAt: z.string().datetime().nullable(),
+  totalUsers: z.number().int(),
+  totalGroups: z.number().int(),
+  storageUsedMb: z.number().nullable(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });

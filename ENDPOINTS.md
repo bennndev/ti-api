@@ -161,6 +161,10 @@ Base URL: `http://localhost:3000`
       "logo": "string",
       "country": "string",
       "status": true,
+      "lastActivityAt": "string (ISO date) | null",
+      "totalUsers": 0,
+      "totalGroups": 0,
+      "storageUsedMb": 0.0,
       "createdAt": "string (ISO date)",
       "updatedAt": "string (ISO date)"
     }
@@ -204,6 +208,10 @@ Base URL: `http://localhost:3000`
   "logo": "string",
   "country": "string",
   "status": true,
+  "lastActivityAt": null,
+  "totalUsers": 0,
+  "totalGroups": 0,
+  "storageUsedMb": null,
   "createdAt": "string (ISO date)",
   "updatedAt": "string (ISO date)"
 }
@@ -233,6 +241,10 @@ Base URL: `http://localhost:3000`
   "logo": "string",
   "country": "string",
   "status": true,
+  "lastActivityAt": "string (ISO date) | null",
+  "totalUsers": 0,
+  "totalGroups": 0,
+  "storageUsedMb": 0.0,
   "createdAt": "string (ISO date)",
   "updatedAt": "string (ISO date)"
 }
@@ -256,6 +268,7 @@ Base URL: `http://localhost:3000`
 ```json
 {
   "name": "string (optional, 1-25 chars)",
+  "ruc": "string (optional, 1-20 chars)",
   "logo": "string (optional)",
   "country": "string (optional)",
   "status": "boolean (optional)"
@@ -272,6 +285,10 @@ Base URL: `http://localhost:3000`
   "logo": "string",
   "country": "string",
   "status": true,
+  "lastActivityAt": "string (ISO date) | null",
+  "totalUsers": 0,
+  "totalGroups": 0,
+  "storageUsedMb": 0.0,
   "createdAt": "string (ISO date)",
   "updatedAt": "string (ISO date)"
 }
@@ -281,7 +298,7 @@ Base URL: `http://localhost:3000`
 - `400` — Body inválido
 - `401` — Sin sesión activa
 - `404` — Organización no encontrada
-- `409` — `name` ya existe en otra organización
+- `409` — `name` o `ruc` ya existen en otra organización
 
 ---
 

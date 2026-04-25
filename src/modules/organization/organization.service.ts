@@ -7,8 +7,6 @@ import {
 import { OrganizationRepository } from './organization.repository';
 import type { CreateOrganizationDto } from './dto/create-organization.schema';
 import type { UpdateOrganizationDto } from './dto/update-organization.schema';
-import type { OrganizationResponseDto } from './dto/response-organization.schema';
-import { paginatedResponseSchema, PaginationMeta } from '@/modules/common/dto/pagination.schema';
 
 @Injectable()
 export class OrganizationService {
@@ -28,17 +26,13 @@ export class OrganizationService {
   async create(dto: CreateOrganizationDto) {
     const slug = this.slugify(dto.name);
 
-    // Check for duplicate slug
     const existingBySlug = await this.organizationRepository.findBySlug(slug);
     if (existingBySlug) {
       throw new ConflictException(`Organization with name "${dto.name}" already exists`);
     }
 
-    // Check for duplicate ruc
-    const existingByRuc = await this.organizationRepository.findMany({
-      where: { ruc: dto.ruc },
-    });
-    if (existingByRuc.total > 0) {
+    const existingByRuc = await this.organizationRepository.findByRuc(dto.ruc);
+    if (existingByRuc) {
       throw new ConflictException(`Organization with RUC "${dto.ruc}" already exists`);
     }
 
@@ -63,9 +57,11 @@ export class OrganizationService {
     });
 
     const totalPages = Math.ceil(total / pageSize);
-    const meta: PaginationMeta = { page, pageSize, total, totalPages };
 
-    return { data, meta };
+    return {
+      data,
+      meta: { page, pageSize, total, totalPages },
+    };
   }
 
   async findById(id: number) {
@@ -77,13 +73,20 @@ export class OrganizationService {
   }
 
   async update(id: number, dto: UpdateOrganizationDto) {
-    await this.findById(id); // ensure exists
+    await this.findById(id);
 
     if (dto.name) {
       const newSlug = this.slugify(dto.name);
       const existing = await this.organizationRepository.findBySlug(newSlug);
       if (existing && existing.id !== id) {
         throw new ConflictException(`Organization with name "${dto.name}" already exists`);
+      }
+    }
+
+    if (dto.ruc) {
+      const existing = await this.organizationRepository.findByRuc(dto.ruc);
+      if (existing && existing.id !== id) {
+        throw new ConflictException(`Organization with RUC "${dto.ruc}" already exists`);
       }
     }
 
