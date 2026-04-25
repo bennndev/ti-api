@@ -4,6 +4,7 @@ import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { auth } from './lib/auth';
 import { toNodeHandler } from 'better-auth/node';
+import { cleanupOpenApiDoc } from 'nestjs-zod';
 import express from 'express';
 
 async function bootstrap() {
@@ -20,7 +21,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, cleanupOpenApiDoc(document));
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
