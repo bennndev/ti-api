@@ -6,7 +6,7 @@ import { SignUpDto } from './dto/sign-up.schema';
 import { SignInDto } from './dto/sign-in.schema';
 import { Public } from '@/decorators/public.decorator';
 import { CurrentUser } from '@/decorators/current-user.decorator';
-import { UserResponseDto } from '@/modules/common/dto/response-user.schema';
+import { UserResponseDto } from '@/modules/users/dto/response-user.schema';
 import type { AuthenticatedRequest } from '@/guards/auth.guard';
 
 @ApiTags('auth')
