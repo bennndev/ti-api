@@ -45,7 +45,6 @@ model User {
   documentType  String  @db.VarChar(4)
   documentNumber String @unique @db.VarChar(20)
 
-  firstName String @db.VarChar(50)
   lastName  String @db.VarChar(50)
 
   status            Boolean @default(true)
