@@ -176,6 +176,158 @@ export class OrganizationRepository {
 
 ---
 
+## Patrón de desarrollo por recurso
+
+Siguiendo las mejores prácticas de NestJS verificadas con Context7.
+
+### Estructura de archivos por módulo
+
+```
+modules/
+└── {resource}/
+    ├── {resource}.controller.ts    # HTTP handlers, routes, Swagger docs
+    ├── {resource}.service.ts        # Lógica de negocio, validación
+    ├── {resource}.repository.ts     # Acceso a datos (Prisma queries)
+    ├── dto/
+    │   ├── create-{resource}.schema.ts  # Zod schema para creación
+    │   ├── update-{resource}.schema.ts  # Zod schema para actualización
+    │   └── response-{resource}.schema.ts # Zod schema para respuesta
+    └── {resource}.module.ts         # Module que engloba todo
+```
+
+### Flujo de datos: Controller → Service → Repository
+
+```
+HTTP Request
+     ▼
+@Controller (recibe @Body, valida con Zod)
+     ▼
+@Service (orquesta lógica de negocio)
+     ▼
+@Repository (ejecuta queries contra Prisma)
+     ▼
+Prisma (genera SQL, ejecuta en PostgreSQL)
+```
+
+### Ejemplo: Create Resource
+
+```typescript
+// modules/auth/dto/create-user.schema.ts
+import { z } from 'zod'
+
+export const createUserSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  firstName: z.string().min(1).max(50),
+  lastName: z.string().min(1).max(50),
+})
+
+export type CreateUserDto = z.infer<typeof createUserSchema>
+```
+
+```typescript
+// modules/auth/auth.controller.ts
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
+
+  @Post('sign-up')
+  @ApiOkResponse({ type: UserResponseDto })
+  async signUp(@Body() body: CreateUserDto) {
+    // Zod validation automático via pipe (config en main.ts)
+    return this.authService.signUp(body)
+  }
+}
+```
+
+```typescript
+// modules/auth/auth.service.ts
+@Injectable()
+export class AuthService {
+  constructor(
+    private readonly authRepository: AuthRepository,
+    private readonly logger: Logger,
+  ) {}
+
+  async signUp(dto: CreateUserDto) {
+    const data = createUserSchema.parse(dto) // throw if invalid
+    return this.authRepository.create(data)
+  }
+}
+```
+
+```typescript
+// modules/auth/auth.repository.ts
+@Injectable()
+export class AuthRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(data: Prisma.UserCreateInput): Promise<User> {
+    return this.prisma.user.create({ data })
+  }
+}
+```
+
+### Validación con Zod
+
+**Regla:** validation se hace en el Service, no en el Controller (el Controller solo delega).
+
+```typescript
+// En el service
+async create(dto: CreateUserDto) {
+  const data = createUserSchema.parse(dto) // Zod valida y throws ZodError si falla
+  return this.repository.create(data)
+}
+```
+
+**Para endpoints simples** (como auth), se puede usar el `Schema validation pipe` de NestJS con Zod. Para endpoints complejos, la validación va en el Service.
+
+### Response DTOs y Swagger
+
+**Crear un schema de respuesta** para que Swagger infiera los tipos correctamente:
+
+```typescript
+// dto/response-user.schema.ts
+export const userResponseSchema = z.object({
+  id: z.number(),
+  email: z.string().email(),
+  firstName: z.string(),
+  lastName: z.string(),
+})
+
+export type UserResponseDto = z.infer<typeof userResponseSchema>
+
+// En el controller
+@ApiOkResponse({ type: UserResponseDto })
+```
+
+### Integración Better Auth + NestJS
+
+Better Auth se integra via `toNodeHandler` de `better-auth/node`:
+
+```typescript
+// main.ts
+import express from 'express'
+import { toNodeHandler } from 'better-auth/node'
+import { auth } from './lib/auth'
+
+const app = express()
+
+// Better Auth maneja /auth/* routes
+app.all('/auth/*', toNodeHandler(auth))
+```
+
+Better Auth expone:
+- `POST /auth/sign-up` — registro email/password
+- `POST /auth/sign-in` — login email/password
+- `POST /auth/sign-out` — logout
+- `GET /auth/google` — redirect OAuth Google
+- `GET /auth/google/callback` — callback Google
+- `GET /auth/apple` — redirect OAuth Apple
+- `GET /auth/apple/callback` — callback Apple
+
+---
+
 ## Modelo de datos (bounded contexts)
 
 ### auth-context
