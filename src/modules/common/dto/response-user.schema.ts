@@ -11,7 +11,7 @@ export const userResponseSchema = z.object({
   roleId: z.number().int().nullable(),
   orgId: z.number().int().nullable(),
   emailVerified: z.boolean(),
-  createdAt: z.date(),
+  createdAt: z.string().datetime(),
 });
 
 export class UserResponseDto extends createZodDto(userResponseSchema) {}
