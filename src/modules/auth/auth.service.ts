@@ -2,18 +2,20 @@ import { Injectable, Logger } from '@nestjs/common';
 import { auth } from '@/lib/auth';
 import { fromNodeHeaders } from 'better-auth/node';
 import type { IncomingHttpHeaders } from 'http';
+import type { SignUpDto } from './dto/sign-up.schema';
+import type { SignInDto } from './dto/sign-in.schema';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
-  async signUp(body: Record<string, unknown>) {
+  async signUp(body: SignUpDto) {
     return auth.api.signUpEmail({
       body: body as any,
     });
   }
 
-  async signIn(body: Record<string, unknown>) {
+  async signIn(body: SignInDto) {
     return auth.api.signInEmail({
       body: body as any,
     });

@@ -1,9 +1,9 @@
-import { Controller, Post, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Req, UseGuards, Body } from '@nestjs/common';
 import type { IncomingHttpHeaders } from 'http';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { signUpSchema } from './dto/sign-up.schema';
-import { signInSchema } from './dto/sign-in.schema';
+import { SignUpDto } from './dto/sign-up.schema';
+import { SignInDto } from './dto/sign-in.schema';
 import { AuthGuard } from '@/guards/auth.guard';
 import type { AuthenticatedRequest } from '@/guards/auth.guard';
 
@@ -13,14 +13,12 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('sign-up')
-  async signUp(@Req() req: Request) {
-    const body = signUpSchema.parse(req.body);
+  async signUp(@Body() body: SignUpDto) {
     return this.authService.signUp(body);
   }
 
   @Post('sign-in')
-  async signIn(@Req() req: Request) {
-    const body = signInSchema.parse(req.body);
+  async signIn(@Body() body: SignInDto) {
     return this.authService.signIn(body);
   }
 

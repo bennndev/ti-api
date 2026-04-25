@@ -38,6 +38,7 @@ model Organization {
 
 model User {
   id        Int     @id @default(autoincrement())
+  email     String  @unique @db.VarChar(255)  // Better Auth requiere email directo
   orgId     Int
   roleId    Int
   username  String  @unique @db.VarChar(50)
