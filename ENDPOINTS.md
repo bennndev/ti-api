@@ -16,9 +16,9 @@ Base URL: `http://localhost:3000`
 {
   "email": "string (required, email válido)",
   "password": "string (required, min 8 caracteres)",
-  "username": "string (optional, 3-30 caracteres)",
-  "firstName": "string (optional, max 50)",
-  "lastName": "string (optional, max 50)"
+  "name": "string (required, es el nombre)",
+  "lastName": "string (required, apellido)",
+  "username": "string (optional, 3-30 caracteres)"
 }
 ```
 
@@ -28,8 +28,7 @@ Base URL: `http://localhost:3000`
   "user": {
     "id": "string",
     "email": "string",
-    "username": "string | null",
-    "firstName": "string | null",
+    "name": "string",
     "lastName": "string | null",
     "emailVerified": "boolean",
     "createdAt": "string (ISO date)",
@@ -120,8 +119,7 @@ Base URL: `http://localhost:3000`
   "user": {
     "id": "string",
     "email": "string",
-    "username": "string | null",
-    "firstName": "string | null",
+    "name": "string",
     "lastName": "string | null",
     "emailVerified": "boolean",
     "createdAt": "string (ISO date)",
