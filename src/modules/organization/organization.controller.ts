@@ -25,12 +25,14 @@ import { Public } from '@/decorators/public.decorator';
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 
+  @Public()
   @Post()
   @ApiOkResponse({ type: OrganizationResponseDto })
   async create(@Body() body: CreateOrganizationDto) {
     return this.organizationService.create(body);
   }
 
+  @Public()
   @Get()
   @ApiOkResponse({ type: OrganizationResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -48,12 +50,14 @@ export class OrganizationController {
     });
   }
 
+  @Public()
   @Get(':id')
   @ApiOkResponse({ type: OrganizationResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.organizationService.findById(id);
   }
 
+  @Public()
   @Patch(':id')
   @ApiOkResponse({ type: OrganizationResponseDto })
   async update(
@@ -63,6 +67,7 @@ export class OrganizationController {
     return this.organizationService.update(id, body);
   }
 
+  @Public()
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(@Param('id', ParseIntPipe) id: number) {
