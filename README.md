@@ -1,6 +1,8 @@
 ![ti-api](https://i.imgur.com/tox031r.png)
 
+<p align="center">
 API REST para plataforma de aprendizaje XR/VR con gestión organizacional multi-tenant.
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/NestJS-v11-E02354?style=flat-square&logo=nestjs" alt="NestJS">
