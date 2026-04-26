@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { betterAuth } from 'better-auth/minimal';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { PrismaClient } from '@/generated/prisma/client';
@@ -36,6 +37,19 @@ export const auth = betterAuth({
       firstName: { type: 'string', required: false },
       lastName: { type: 'string', required: false },
       preferredLanguage: { type: 'string', required: false },
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          const data = { ...user };
+          if (!data.username) {
+            data.username = data.email?.split('@')[0] ?? 'user';
+          }
+          return { data };
+        },
+      },
     },
   },
 });

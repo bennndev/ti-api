@@ -10,7 +10,6 @@ import { UsersRepository } from './users.repository';
 import type { CreateUserDto } from './dto/create-user.schema';
 import type { UpdateUserDto } from './dto/update-user.schema';
 import type { UserResponseDto } from './dto/response-user.schema';
-import { paginatedResponseSchema } from '@/modules/common/dto/pagination.schema';
 
 @Injectable()
 export class UsersService {
@@ -41,12 +40,12 @@ export class UsersService {
     });
 
     // Update orgId and roleId via repository since signUpEmail doesn't set them
-    await this.usersRepository.update(result.user.id as unknown as number, {
+    await this.usersRepository.update(result.user.id as string, {
       orgId: dto.orgId,
       roleId: dto.roleId,
     } as any);
 
-    return this.findById(result.user.id as unknown as number);
+    return this.findById(result.user.id as string);
   }
 
   async findAll(params: {
@@ -76,7 +75,7 @@ export class UsersService {
     };
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     const user = await this.usersRepository.findById(id);
     if (!user) {
       throw new NotFoundException(`User #${id} not found`);
@@ -84,7 +83,7 @@ export class UsersService {
     return this.mapToResponse(user);
   }
 
-  async update(id: number, dto: UpdateUserDto, currentUser: { id: number; orgId: number; roleId: number }) {
+  async update(id: string, dto: UpdateUserDto, currentUser: { id: string; orgId: number | null; roleId: number | null }) {
     const user = await this.usersRepository.findById(id);
     if (!user) {
       throw new NotFoundException(`User #${id} not found`);
@@ -99,7 +98,7 @@ export class UsersService {
     return this.mapToResponse(updated);
   }
 
-  async softDelete(id: number, currentUser: { id: number; orgId: number; roleId: number }) {
+  async softDelete(id: string, currentUser: { id: string; orgId: number | null; roleId: number | null }) {
     const user = await this.usersRepository.findById(id);
     if (!user) {
       throw new NotFoundException(`User #${id} not found`);

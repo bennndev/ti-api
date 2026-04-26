@@ -68,6 +68,7 @@ Base URL: `http://localhost:3000`
   "user": {
     "id": "string",
     "email": "string",
+    "name": "string (nullable)",
     "emailVerified": "boolean",
     "createdAt": "string (ISO date)",
     "updatedAt": "string (ISO date)"
@@ -82,6 +83,27 @@ Base URL: `http://localhost:3000`
 **Errores:**
 - `400` — Body inválido
 - `401` — Credenciales inválidas
+
+---
+
+## Credenciales de Testing
+
+### Superadmin (rol: 1)
+- **Email:** superadmin@ti-platform.com
+- **Password:** Superadmin123!
+
+### Roles disponibles
+| ID | Code | Descripción |
+|----|------|-------------|
+| 1 | super_admin | Plenos poderes, crea usuarios y orgs |
+| 2 | org_admin | Admin de organización |
+| 3 | instructor | Crea experiencias educativas |
+| 4 | student | Usuario final |
+
+### Organizaciones de prueba
+| ID | Name | Slug | Para |
+|----|------|------|-------|
+| 1 | System | system | Superadmin y usuarios del sistema |
 
 ---
 
@@ -547,23 +569,22 @@ BETTER_AUTH_URL=http://localhost:3000
 
 ### Endpoint list
 
-| Método | Path | Descripción |
-|--------|------|-------------|
-| POST | `/auth/sign-up` | Registro con email/password |
-| POST | `/auth/sign-in` | Login con email/password |
-| POST | `/auth/sign-out` | Logout |
-| GET | `/auth/me` | Usuario actual |
-| GET | `/auth/google` | Redirect OAuth Google |
-| GET | `/auth/google/callback` | Callback OAuth Google |
-| GET | `/auth/apple` | Redirect OAuth Apple |
-| GET | `/auth/apple/callback` | Callback OAuth Apple |
-| POST | `/users` | Crear usuario (solo superadmin) |
-| GET | `/users` | Listar usuarios (paginados) |
-| GET | `/users/:id` | Obtener usuario por ID |
-| PATCH | `/users/:id` | Actualizar usuario |
-| DELETE | `/users/:id` | Soft-delete usuario |
-| GET | `/organizations` | Listar organizaciones (paginadas) |
-| POST | `/organizations` | Crear organización |
-| GET | `/organizations/:id` | Obtener organización por ID |
-| PATCH | `/organizations/:id` | Actualizar organización |
-| DELETE | `/organizations/:id` | Soft-delete organización |
+| Método | Path | Descripción | Auth |
+|--------|------|-------------|------|
+| POST | `/auth/sign-in` | Login con email/password | Public |
+| POST | `/auth/sign-out` | Logout | Cookie |
+| GET | `/auth/me` | Usuario actual | Cookie |
+| GET | `/auth/google` | Redirect OAuth Google | Public |
+| GET | `/auth/google/callback` | Callback OAuth Google | Public |
+| GET | `/auth/apple` | Redirect OAuth Apple | Public |
+| GET | `/auth/apple/callback` | Callback OAuth Apple | Public |
+| POST | `/users` | Crear usuario | Cookie (super_admin) |
+| GET | `/users` | Listar usuarios | Cookie |
+| GET | `/users/:id` | Obtener usuario por ID | Cookie |
+| PATCH | `/users/:id` | Actualizar usuario | Cookie |
+| DELETE | `/users/:id` | Soft-delete usuario | Cookie |
+| GET | `/organizations` | Listar organizaciones | Cookie |
+| POST | `/organizations` | Crear organización | Cookie |
+| GET | `/organizations/:id` | Obtener organización por ID | Cookie |
+| PATCH | `/organizations/:id` | Actualizar organización | Cookie |
+| DELETE | `/organizations/:id` | Soft-delete organización | Cookie |

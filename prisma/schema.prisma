@@ -37,16 +37,19 @@ model Organization {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  email     String  @unique @db.VarChar(255)  // Better Auth requiere email directo
-  orgId     Int
-  roleId    Int
-  username  String  @unique @db.VarChar(50)
+  id        String   @id @default(cuid())
+  name      String?  @db.VarChar(100)
+  email     String   @unique @db.VarChar(255)
+  emailVerified Boolean @default(false)
+  image     String?  @db.VarChar(255)
+  orgId     Int?
+  roleId    Int?
+  username  String?  @unique @db.VarChar(50)
 
-  documentType  String  @db.VarChar(4)
-  documentNumber String @unique @db.VarChar(20)
+  documentType  String?  @db.VarChar(4)
+  documentNumber String? @unique @db.VarChar(20)
 
-  lastName  String @db.VarChar(50)
+  lastName  String? @db.VarChar(50)
 
   status            Boolean @default(true)
   lastLogin         DateTime?
@@ -60,12 +63,14 @@ model User {
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
 
-  org       Organization @relation(fields: [orgId], references: [id])
-  role      Role         @relation(fields: [roleId], references: [id])
+  org       Organization? @relation(fields: [orgId], references: [id])
+  role      Role?         @relation(fields: [roleId], references: [id])
   phones    Phone[]
   emails    Email[]
   groups    User_Group[]
   activityLogs Activity_Log[]
+  accounts  Account[]
+  sessions  Session[]
 
   @@index([orgId])
   @@index([username])
@@ -85,6 +90,57 @@ model Role {
   permissions  Role_Permission[]
 
   @@index([code])
+}
+
+// Better Auth models
+model Account {
+  id                  String   @id @default(cuid())
+  userId              String
+  providerId          String
+  accountId           String
+  refresh_token       String?  @db.Text
+  access_token        String?  @db.Text
+  expires_at          Int?
+  token_type          String?
+  scope               String?
+  id_token            String?  @db.Text
+  session_state       String?
+  password            String?  @db.VarChar(255)
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  token        String   @unique
+  userId       String
+  expiresAt    DateTime
+  ipAddress    String?
+  userAgent    String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  id          String   @id @default(cuid())
+  identifier  String
+  value       String   @unique
+  expiresAt   DateTime
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([identifier])
 }
 
 model Permission {
@@ -245,7 +301,7 @@ enum GroupStatus {
 }
 
 model User_Group {
-  userId       Int
+  userId       String
   groupId      Int
   roleInGroup  GroupRole?
   status       UserGroupStatus
@@ -318,7 +374,7 @@ model Phone {
   phone        String   @db.VarChar(15)
   type         PhoneType?
   isPrimary    Boolean  @default(false)
-  userId       Int?
+  userId       String?
   organizationId Int?
 
   user         User?        @relation(fields: [userId], references: [id])
@@ -341,7 +397,7 @@ model Email {
   isPrimary       Boolean   @default(false)
   verifiedAt      DateTime?
 
-  userId          Int?
+  userId          String?
   organizationId  Int?
 
   user         User?        @relation(fields: [userId], references: [id])
@@ -359,7 +415,7 @@ enum EmailType {
 
 model Activity_Log {
   id       Int    @id @default(autoincrement())
-  userId   Int
+  userId   String
   orgId    Int
   action   String @db.VarChar(100)
   entity   String? @db.VarChar(50)

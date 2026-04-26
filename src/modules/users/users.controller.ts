@@ -7,14 +7,12 @@ import {
   Body,
   Param,
   Query,
-  ParseIntPipe,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto';
-import { Public } from '@/decorators/public.decorator';
 import { Roles } from '@/decorators/roles.decorator';
 import { CurrentUser } from '@/decorators/current-user.decorator';
 import type { AuthenticatedRequest } from '@/guards/auth.guard';
@@ -53,14 +51,14 @@ export class UsersController {
 
   @Get(':id')
   @ApiOkResponse({ type: UserResponseDto })
-  async findById(@Param('id', ParseIntPipe) id: number) {
+  async findById(@Param('id') id: string) {
     return this.usersService.findById(id);
   }
 
   @Patch(':id')
   @ApiOkResponse({ type: UserResponseDto })
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() body: UpdateUserDto,
     @CurrentUser() user: AuthenticatedRequest['user'],
   ) {
@@ -70,7 +68,7 @@ export class UsersController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @CurrentUser() user: AuthenticatedRequest['user'],
   ) {
     return this.usersService.softDelete(id, user as any);

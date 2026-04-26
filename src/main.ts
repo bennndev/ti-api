@@ -12,9 +12,9 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
-  // Mount Better Auth routes on /auth/* BEFORE express.json()
+  // Mount Better Auth routes on /better-auth/* BEFORE other routes
   const expressApp = app.getHttpAdapter().getInstance();
-  expressApp.all('/auth/{*splat}', toNodeHandler(auth));
+  expressApp.all('/better-auth/{*splat}', toNodeHandler(auth));
 
   const config = new DocumentBuilder()
     .setTitle('ti-api')

@@ -32,7 +32,7 @@ export class UsersRepository {
     return { data, total };
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: string): Promise<User | null> {
     return this.prisma.user.findFirst({
       where: { id, deletedAt: null },
     });
@@ -52,14 +52,14 @@ export class UsersRepository {
     return this.prisma.user.create({ data });
   }
 
-  async update(id: number, data: Prisma.UserUncheckedUpdateInput): Promise<User> {
+  async update(id: string, data: Prisma.UserUncheckedUpdateInput): Promise<User> {
     return this.prisma.user.update({
       where: { id },
       data,
     });
   }
 
-  async softDelete(id: number): Promise<User> {
+  async softDelete(id: string): Promise<User> {
     return this.prisma.user.update({
       where: { id },
       data: { deletedAt: new Date() },

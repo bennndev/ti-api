@@ -26,18 +26,10 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('No user found');
     }
 
+    // Check if user has one of the required roles by roleId
     const hasRole = requiredRoles.some((role) => {
-      // Check by role code (string comparison)
-      if (typeof user.role === 'string') {
-        return user.role === role;
-      }
-      // Check by role id (number comparison)
-      if (typeof user.roleId === 'number') {
-        // We'll resolve roleId -> code via the Role enum or service
-        // For now, pass through and resolve in a later step
-        return true;
-      }
-      return false;
+      const roleId = parseInt(role, 10);
+      return user.roleId === roleId;
     });
 
     if (!hasRole) {
