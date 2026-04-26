@@ -269,10 +269,26 @@ model Experience {
 
   course        Course           @relation(fields: [courseId], references: [id])
   groupExperiences Group_Experience[]
+  addressable   Addressable?
 
   @@index([courseId])
   @@index([order])
   @@index([status])
+}
+
+model Addressable {
+  id            Int       @id @default(autoincrement())
+  experienceId  Int       @unique
+  bundleUrl     String    @db.VarChar(500)
+  version       String    @db.VarChar(20)
+  sizeMb        Float
+  catalogUrl    String    @db.VarChar(500)
+  isActive      Boolean   @default(true)
+  updatedAt     DateTime  @updatedAt
+
+  experience    Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+
+  @@index([experienceId])
 }
 
 enum ExperienceType {

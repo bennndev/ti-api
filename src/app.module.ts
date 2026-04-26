@@ -18,6 +18,7 @@ import { TelemetryModule } from './modules/telemetry/telemetry.module';
 import { RoleModule } from './modules/role/role.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { XrAuthModule } from './modules/xr-auth/xr-auth.module';
+import { AddressableModule } from './modules/addressable/addressable.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthGuard } from './guards/auth.guard';
 import { RolesGuard } from './guards/roles.guard';
@@ -46,6 +47,7 @@ import { RolesGuard } from './guards/roles.guard';
     TelemetryModule,
     RoleModule,
     XrAuthModule,
+    AddressableModule,
     PrismaModule,
   ],
 })
