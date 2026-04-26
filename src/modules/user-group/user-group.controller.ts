@@ -22,14 +22,14 @@ import { Permission } from '@/modules/role/permissions.enum';
 export class UserGroupController {
   constructor(private readonly userGroupService: UserGroupService) {}
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
+  @RequirePermissions([Permission.USER_GROUP_CREATE])
   @Post()
   @ApiOkResponse({ type: UserGroupResponseDto })
   async create(@Body() body: CreateUserGroupDto) {
     return this.userGroupService.create(body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
+  @RequirePermissions([Permission.USER_GROUP_READ])
   @Get()
   @ApiOkResponse({ type: UserGroupResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -53,7 +53,7 @@ export class UserGroupController {
     });
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.USER_GROUP_READ])
   @Get(':userId/:groupId')
   @ApiOkResponse({ type: UserGroupResponseDto })
   async findById(
@@ -63,7 +63,7 @@ export class UserGroupController {
     return this.userGroupService.findById(userId, groupId);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
+  @RequirePermissions([Permission.USER_GROUP_UPDATE])
   @Patch(':userId/:groupId')
   @ApiOkResponse({ type: UserGroupResponseDto })
   async update(
@@ -74,7 +74,7 @@ export class UserGroupController {
     return this.userGroupService.update(userId, groupId, body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
+  @RequirePermissions([Permission.USER_GROUP_DELETE])
   @Delete(':userId/:groupId')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(

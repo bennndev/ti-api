@@ -22,7 +22,8 @@ export class PermissionsGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
 
-    if (!requiredPermissions) {
+    // No permissions required = allow
+    if (!requiredPermissions || requiredPermissions.length === 0) {
       return true;
     }
 
@@ -39,11 +40,19 @@ export class PermissionsGuard implements CanActivate {
       throw new ForbiddenException('Role not found');
     }
 
-    const hasPermission = requiredPermissions.some(
-      (permission) => role.code === permission,
+    // SUPER_ADMIN has all permissions
+    if (role.code === 'super_admin') {
+      return true;
+    }
+
+    // Check if role has ALL required permissions
+    const rolePermissionCodes = role.permissions.map((p) => p.code);
+
+    const hasAllPermissions = requiredPermissions.every((required) =>
+      rolePermissionCodes.includes(required),
     );
 
-    if (!hasPermission) {
+    if (!hasAllPermissions) {
       throw new ForbiddenException('Insufficient permissions');
     }
 

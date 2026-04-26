@@ -26,14 +26,14 @@ import { Permission } from '@/modules/role/permissions.enum';
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 
-  @RequirePermissions([Permission.SUPER_ADMIN])
+  @RequirePermissions([Permission.ORGANIZATION_CREATE])
   @Post()
   @ApiOkResponse({ type: OrganizationResponseDto })
   async create(@Body() body: CreateOrganizationDto) {
     return this.organizationService.create(body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN])
+  @RequirePermissions([Permission.ORGANIZATION_READ])
   @Get()
   @ApiOkResponse({ type: OrganizationResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -51,14 +51,14 @@ export class OrganizationController {
     });
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.ORGANIZATION_READ])
   @Get(':id')
   @ApiOkResponse({ type: OrganizationResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.organizationService.findById(id);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN])
+  @RequirePermissions([Permission.ORGANIZATION_UPDATE])
   @Patch(':id')
   @ApiOkResponse({ type: OrganizationResponseDto })
   async update(
@@ -68,7 +68,7 @@ export class OrganizationController {
     return this.organizationService.update(id, body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN])
+  @RequirePermissions([Permission.ORGANIZATION_DELETE])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(@Param('id', ParseIntPipe) id: number) {

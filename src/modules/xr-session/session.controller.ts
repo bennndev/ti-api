@@ -22,7 +22,7 @@ export class SessionController {
    * PATCH /sessions/:sessionId/complete
    * Complete an XR session and update group_experience
    */
-  @RequirePermissions([Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.SESSION_UPDATE])
   @Patch(':sessionId/complete')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: XRSessionCompleteResponseDto })
@@ -37,7 +37,7 @@ export class SessionController {
    * GET /sessions/:sessionId
    * Get session details
    */
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.SESSION_READ])
   @Get(':sessionId')
   @ApiOkResponse({ type: XRSessionResponseDto })
   async getSession(@Param('sessionId') sessionId: string) {

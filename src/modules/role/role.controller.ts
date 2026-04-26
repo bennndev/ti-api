@@ -16,7 +16,7 @@ import { Permission } from './permissions.enum';
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.ROLE_READ])
   @Get()
   @ApiOkResponse({ type: RoleResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -31,7 +31,7 @@ export class RoleController {
     });
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.ROLE_READ])
   @Get(':id')
   @ApiOkResponse({ type: RoleResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {

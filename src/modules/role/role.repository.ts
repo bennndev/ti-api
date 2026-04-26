@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/lib/prisma';
-import { Prisma, Role } from '@/generated/prisma/client';
+import { Prisma, Role, Permission } from '@/generated/prisma/client';
+
+export interface RoleWithPermissions extends Role {
+  permissions: Permission[];
+}
 
 @Injectable()
 export class RoleRepository {
@@ -27,15 +31,43 @@ export class RoleRepository {
     return { data, total };
   }
 
-  async findById(id: number): Promise<Role | null> {
-    return this.prisma.role.findUnique({
+  async findById(id: number): Promise<RoleWithPermissions | null> {
+    const role = await this.prisma.role.findUnique({
       where: { id },
+      include: {
+        permissions: {
+          include: {
+            permission: true,
+          },
+        },
+      },
     });
+
+    if (!role) return null;
+
+    return {
+      ...role,
+      permissions: role.permissions.map((rp) => rp.permission),
+    };
   }
 
-  async findByCode(code: string): Promise<Role | null> {
-    return this.prisma.role.findUnique({
+  async findByCode(code: string): Promise<RoleWithPermissions | null> {
+    const role = await this.prisma.role.findUnique({
       where: { code },
+      include: {
+        permissions: {
+          include: {
+            permission: true,
+          },
+        },
+      },
     });
+
+    if (!role) return null;
+
+    return {
+      ...role,
+      permissions: role.permissions.map((rp) => rp.permission),
+    };
   }
 }

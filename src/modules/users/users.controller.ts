@@ -23,14 +23,14 @@ import type { AuthenticatedRequest } from '@/guards/auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.USER_CREATE])
   @Post()
   @ApiOkResponse({ type: UserResponseDto })
   async create(@Body() body: CreateUserDto) {
     return this.usersService.create(body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.USER_READ])
   @Get()
   @ApiOkResponse({ type: UserResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -51,14 +51,14 @@ export class UsersController {
     });
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.USER_READ])
   @Get(':id')
   @ApiOkResponse({ type: UserResponseDto })
   async findById(@Param('id') id: string) {
     return this.usersService.findById(id);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.USER_UPDATE])
   @Patch(':id')
   @ApiOkResponse({ type: UserResponseDto })
   async update(
@@ -69,7 +69,7 @@ export class UsersController {
     return this.usersService.update(id, body, user as any);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.USER_DELETE])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(

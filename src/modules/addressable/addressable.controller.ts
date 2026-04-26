@@ -27,14 +27,14 @@ import { Permission } from '@/modules/role/permissions.enum';
 export class AddressableController {
   constructor(private readonly addressableService: AddressableService) {}
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.ADDRESSABLE_CREATE])
   @Post()
   @ApiOkResponse({ type: AddressableResponseDto })
   async create(@Body() body: CreateAddressableDto) {
     return this.addressableService.create(body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.ADDRESSABLE_READ])
   @Get()
   @ApiOkResponse({ type: AddressableResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -55,14 +55,14 @@ export class AddressableController {
     });
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.ADDRESSABLE_READ])
   @Get(':id')
   @ApiOkResponse({ type: AddressableResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.addressableService.findById(id);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
+  @RequirePermissions([Permission.ADDRESSABLE_UPDATE])
   @Patch(':id')
   @ApiOkResponse({ type: AddressableResponseDto })
   async update(
@@ -72,7 +72,7 @@ export class AddressableController {
     return this.addressableService.update(id, body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.ADDRESSABLE_DELETE])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id', ParseIntPipe) id: number) {
@@ -86,7 +86,7 @@ export class AddressableController {
 export class ExperienceAddressableController {
   constructor(private readonly addressableService: AddressableService) {}
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.EXPERIENCE_ADDRESSABLE])
   @Get(':experienceId/addressable')
   @ApiOkResponse({ type: AddressableUnityResponseDto })
   async getByExperience(@Param('experienceId', ParseIntPipe) experienceId: number) {

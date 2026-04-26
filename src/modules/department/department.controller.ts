@@ -22,14 +22,14 @@ import { Permission } from '@/modules/role/permissions.enum';
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.DEPARTMENT_CREATE])
   @Post()
   @ApiOkResponse({ type: DepartmentResponseDto })
   async create(@Body() body: CreateDepartmentDto) {
     return this.departmentService.create(body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.DEPARTMENT_READ])
   @Get()
   @ApiOkResponse({ type: DepartmentResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -50,14 +50,14 @@ export class DepartmentController {
     });
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.DEPARTMENT_READ])
   @Get(':id')
   @ApiOkResponse({ type: DepartmentResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.departmentService.findById(id);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.DEPARTMENT_UPDATE])
   @Patch(':id')
   @ApiOkResponse({ type: DepartmentResponseDto })
   async update(
@@ -67,7 +67,7 @@ export class DepartmentController {
     return this.departmentService.update(id, body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.DEPARTMENT_DELETE])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(@Param('id', ParseIntPipe) id: number) {

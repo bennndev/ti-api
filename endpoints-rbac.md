@@ -1,10 +1,67 @@
-# API Endpoints — RBAC Mapping
+# API Endpoints — RBAC Mapping (Granular)
 
 Roles disponibles:
 - `SUPER_ADMIN` — Super Admin (plenos poderes sobre todas las organizaciones)
 - `ORG_ADMIN` — Org Admin (administra su organización)
 - `INSTRUCTOR` — Instructor (crea y gestiona experiencias educativas)
 - `STUDENT` — Student (usuario final, consume experiencias)
+
+---
+
+## Matriz de Permisos por Rol
+
+| Permiso | SUPER_ADMIN | ORG_ADMIN | INSTRUCTOR | STUDENT |
+|---------|:-----------:|:---------:|:----------:|:-------:|
+| organization:create | ✅ | ❌ | ❌ | ❌ |
+| organization:read | ✅ | ❌ | ❌ | ❌ |
+| organization:update | ✅ | ❌ | ❌ | ❌ |
+| organization:delete | ✅ | ❌ | ❌ | ❌ |
+| user:create | ✅ | ✅ | ❌ | ❌ |
+| user:read | ✅ | ✅ | ✅ | ✅ |
+| user:update | ✅ | ✅ | ❌ | ❌ |
+| user:delete | ✅ | ✅ | ❌ | ❌ |
+| role:read | ✅ | ✅ | ❌ | ❌ |
+| department:create | ✅ | ✅ | ❌ | ❌ |
+| department:read | ✅ | ✅ | ❌ | ❌ |
+| department:update | ✅ | ✅ | ❌ | ❌ |
+| department:delete | ✅ | ✅ | ❌ | ❌ |
+| specialty:create | ✅ | ✅ | ❌ | ❌ |
+| specialty:read | ✅ | ✅ | ❌ | ❌ |
+| specialty:update | ✅ | ✅ | ❌ | ❌ |
+| specialty:delete | ✅ | ✅ | ❌ | ❌ |
+| course:create | ✅ | ✅ | ❌ | ❌ |
+| course:read | ✅ | ✅ | ❌ | ❌ |
+| course:update | ✅ | ✅ | ❌ | ❌ |
+| course:delete | ✅ | ✅ | ❌ | ❌ |
+| experience:create | ✅ | ✅ | ❌ | ❌ |
+| experience:read | ✅ | ✅ | ❌ | ❌ |
+| experience:update | ✅ | ✅ | ✅ | ❌ |
+| experience:delete | ✅ | ✅ | ❌ | ❌ |
+| experience:session | ✅ | ✅ | ✅ | ✅ |
+| experience:addressable | ✅ | ✅ | ❌ | ❌ |
+| group:create | ✅ | ✅ | ✅ | ❌ |
+| group:read | ✅ | ✅ | ✅ | ❌ |
+| group:update | ✅ | ✅ | ✅ | ❌ |
+| group:delete | ✅ | ✅ | ✅ | ❌ |
+| user-group:create | ✅ | ✅ | ✅ | ❌ |
+| user-group:read | ✅ | ✅ | ✅ | ❌ |
+| user-group:update | ✅ | ✅ | ✅ | ❌ |
+| user-group:delete | ✅ | ✅ | ✅ | ❌ |
+| group-experience:create | ✅ | ✅ | ✅ | ❌ |
+| group-experience:read | ✅ | ✅ | ✅ | ❌ |
+| group-experience:update | ✅ | ✅ | ✅ | ❌ |
+| group-experience:delete | ✅ | ✅ | ✅ | ❌ |
+| score-event:create | ❌ | ❌ | ❌ | ✅ |
+| score-event:read | ✅ | ✅ | ✅ | ✅ |
+| score-event:delete | ✅ | ✅ | ❌ | ❌ |
+| session:read | ✅ | ✅ | ✅ | ✅ |
+| session:update | ❌ | ❌ | ✅ | ✅ |
+| addressable:create | ✅ | ✅ | ❌ | ❌ |
+| addressable:read | ✅ | ✅ | ✅ | ✅ |
+| addressable:update | ✅ | ✅ | ✅ | ❌ |
+| addressable:delete | ✅ | ✅ | ❌ | ❌ |
+| telemetry:create | ❌ | ❌ | ❌ | ✅ |
+| activity-log:read | ✅ | ✅ | ❌ | ❌ |
 
 ---
 
@@ -25,13 +82,11 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /organizations | SUPER_ADMIN |
-| GET | /organizations | SUPER_ADMIN |
-| GET | /organizations/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| PATCH | /organizations/:id | SUPER_ADMIN |
-| DELETE | /organizations/:id | SUPER_ADMIN |
-
-*Verificación de ownership por orgId en el service/repository
+| POST | /organizations | organization:create |
+| GET | /organizations | organization:read |
+| GET | /organizations/:id | organization:read |
+| PATCH | /organizations/:id | organization:update |
+| DELETE | /organizations/:id | organization:delete |
 
 ---
 
@@ -39,13 +94,11 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /users | SUPER_ADMIN, ORG_ADMIN |
-| GET | /users | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| GET | /users/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| PATCH | /users/:id | SUPER_ADMIN, ORG_ADMIN |
-| DELETE | /users/:id | SUPER_ADMIN, ORG_ADMIN |
-
-*ORG_ADMIN solo gestiona usuarios de su org. El filtrado va en service/repository.
+| POST | /users | user:create |
+| GET | /users | user:read |
+| GET | /users/:id | user:read |
+| PATCH | /users/:id | user:update |
+| DELETE | /users/:id | user:delete |
 
 ---
 
@@ -53,8 +106,8 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| GET | /roles | SUPER_ADMIN, ORG_ADMIN |
-| GET | /roles/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| GET | /roles | role:read |
+| GET | /roles/:id | role:read |
 
 ---
 
@@ -62,11 +115,11 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /departments | SUPER_ADMIN, ORG_ADMIN |
-| GET | /departments | SUPER_ADMIN, ORG_ADMIN |
-| GET | /departments/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| PATCH | /departments/:id | SUPER_ADMIN, ORG_ADMIN |
-| DELETE | /departments/:id | SUPER_ADMIN, ORG_ADMIN |
+| POST | /departments | department:create |
+| GET | /departments | department:read |
+| GET | /departments/:id | department:read |
+| PATCH | /departments/:id | department:update |
+| DELETE | /departments/:id | department:delete |
 
 ---
 
@@ -74,13 +127,11 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /specialties | SUPER_ADMIN, ORG_ADMIN |
-| GET | /specialties | SUPER_ADMIN, ORG_ADMIN |
-| GET | /specialties/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| PATCH | /specialties/:id | SUPER_ADMIN, ORG_ADMIN |
-| DELETE | /specialties/:id | SUPER_ADMIN, ORG_ADMIN |
-
-*Verificación de ownership por department/specialty en service/repository
+| POST | /specialties | specialty:create |
+| GET | /specialties | specialty:read |
+| GET | /specialties/:id | specialty:read |
+| PATCH | /specialties/:id | specialty:update |
+| DELETE | /specialties/:id | specialty:delete |
 
 ---
 
@@ -88,13 +139,11 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /courses | SUPER_ADMIN, ORG_ADMIN |
-| GET | /courses | SUPER_ADMIN, ORG_ADMIN |
-| GET | /courses/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| PATCH | /courses/:id | SUPER_ADMIN, ORG_ADMIN |
-| DELETE | /courses/:id | SUPER_ADMIN, ORG_ADMIN |
-
-*Instructor/Student ven courses donde tienen Group membership
+| POST | /courses | course:create |
+| GET | /courses | course:read |
+| GET | /courses/:id | course:read |
+| PATCH | /courses/:id | course:update |
+| DELETE | /courses/:id | course:delete |
 
 ---
 
@@ -102,15 +151,13 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /experiences | SUPER_ADMIN, ORG_ADMIN |
-| GET | /experiences | SUPER_ADMIN, ORG_ADMIN |
-| GET | /experiences/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| PATCH | /experiences/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-| DELETE | /experiences/:id | SUPER_ADMIN, ORG_ADMIN |
-| POST | /experiences/:experienceId/sessions | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| GET | /experiences/:experienceId/addressable | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-
-*Instructor no puede crear/eliminar, solo actualizar datos. Student solo ve experiencias asignadas.
+| POST | /experiences | experience:create |
+| GET | /experiences | experience:read |
+| GET | /experiences/:id | experience:read |
+| PATCH | /experiences/:id | experience:update |
+| DELETE | /experiences/:id | experience:delete |
+| POST | /experiences/:experienceId/sessions | experience:session |
+| GET | /experiences/:experienceId/addressable | experience:addressable |
 
 ---
 
@@ -118,13 +165,11 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /groups | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-| GET | /groups | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-| GET | /groups/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| PATCH | /groups/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-| DELETE | /groups/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-
-*Student solo ve grupos a los que pertenece (no el listado general)
+| POST | /groups | group:create |
+| GET | /groups | group:read |
+| GET | /groups/:id | group:read |
+| PATCH | /groups/:id | group:update |
+| DELETE | /groups/:id | group:delete |
 
 ---
 
@@ -132,13 +177,11 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /user-groups | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-| GET | /user-groups | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-| GET | /user-groups/:userId/:groupId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| PATCH | /user-groups/:userId/:groupId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-| DELETE | /user-groups/:userId/:groupId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-
-*Student solo ve asignaciones de grupos a los que pertenece
+| POST | /user-groups | user-group:create |
+| GET | /user-groups | user-group:read |
+| GET | /user-groups/:userId/:groupId | user-group:read |
+| PATCH | /user-groups/:userId/:groupId | user-group:update |
+| DELETE | /user-groups/:userId/:groupId | user-group:delete |
 
 ---
 
@@ -146,13 +189,11 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /group-experiences | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-| GET | /group-experiences | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-| GET | /group-experiences/:groupId/:experienceId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| PATCH | /group-experiences/:groupId/:experienceId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-| DELETE | /group-experiences/:groupId/:experienceId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-
-*Student solo ve experiencias asignadas a sus grupos
+| POST | /group-experiences | group-experience:create |
+| GET | /group-experiences | group-experience:read |
+| GET | /group-experiences/:groupId/:experienceId | group-experience:read |
+| PATCH | /group-experiences/:groupId/:experienceId | group-experience:update |
+| DELETE | /group-experiences/:groupId/:experienceId | group-experience:delete |
 
 ---
 
@@ -160,14 +201,12 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /score-events | STUDENT |
-| GET | /score-events | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| GET | /score-events/session/:sessionId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| GET | /score-events/group/:groupId/experience/:experienceId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| GET | /score-events/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| DELETE | /score-events/:id | SUPER_ADMIN, ORG_ADMIN |
-
-*POST desde Unity/VR authenticado como STUDENT (XR device = estudiante logueado)
+| POST | /score-events | score-event:create |
+| GET | /score-events | score-event:read |
+| GET | /score-events/session/:sessionId | score-event:read |
+| GET | /score-events/group/:groupId/experience/:experienceId | score-event:read |
+| GET | /score-events/:id | score-event:read |
+| DELETE | /score-events/:id | score-event:delete |
 
 ---
 
@@ -175,7 +214,7 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /telemetry/session | STUDENT |
+| POST | /telemetry/session | telemetry:create |
 
 ---
 
@@ -194,8 +233,8 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| PATCH | /sessions/:sessionId/complete | INSTRUCTOR, STUDENT |
-| GET | /sessions/:sessionId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| PATCH | /sessions/:sessionId/complete | session:update |
+| GET | /sessions/:sessionId | session:read |
 
 ---
 
@@ -203,13 +242,11 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /addressables | SUPER_ADMIN, ORG_ADMIN |
-| GET | /addressables | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| GET | /addressables/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
-| PATCH | /addressables/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
-| DELETE | /addressables/:id | SUPER_ADMIN, ORG_ADMIN |
-
-*Instructor no puede crear/eliminar, solo modificar y ver. Student solo ve addressables de experiencias asignadas.
+| POST | /addressables | addressable:create |
+| GET | /addressables | addressable:read |
+| GET | /addressables/:id | addressable:read |
+| PATCH | /addressables/:id | addressable:update |
+| DELETE | /addressables/:id | addressable:delete |
 
 ---
 
@@ -219,8 +256,8 @@ Roles disponibles:
 |--------|------|------------|
 | POST | /activity-log | PUBLIC* |
 | POST | /activity-log/batch | PUBLIC* |
-| GET | /activity-log | SUPER_ADMIN, ORG_ADMIN |
-| GET | /activity-log/:id | SUPER_ADMIN, ORG_ADMIN |
+| GET | /activity-log | activity-log:read |
+| GET | /activity-log/:id | activity-log:read |
 
 *POST es llamado internamente por el sistema (audit interceptor), no directamente por usuarios.
 
@@ -234,13 +271,9 @@ Roles disponibles:
 
 ---
 
-## Instrucciones
+## Convenciones
 
-Completá la columna `Permission` con el rol requerido:
-- `SUPER_ADMIN`
-- `ORG_ADMIN`
-- `INSTRUCTOR`
-- `STUDENT`
-- `PUBLIC` (sin autenticación)
-
-Podés usar múltiples roles separados por coma: `ORG_ADMIN, INSTRUCTOR`
+- Formato de permiso: `recurso:accion`
+- Acciones disponibles: `create`, `read`, `update`, `delete`
+- Acciones especiales: `session`, `addressable`, `telemetry` (vienen de operaciones específicas)
+- PUBLIC = endpoint sin autenticación

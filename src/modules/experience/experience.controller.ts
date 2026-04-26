@@ -22,14 +22,14 @@ import { Permission } from '@/modules/role/permissions.enum';
 export class ExperienceController {
   constructor(private readonly experienceService: ExperienceService) {}
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.EXPERIENCE_CREATE])
   @Post()
   @ApiOkResponse({ type: ExperienceResponseDto })
   async create(@Body() body: CreateExperienceDto) {
     return this.experienceService.create(body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.EXPERIENCE_READ])
   @Get()
   @ApiOkResponse({ type: ExperienceResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -50,14 +50,14 @@ export class ExperienceController {
     });
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.EXPERIENCE_READ])
   @Get(':id')
   @ApiOkResponse({ type: ExperienceResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.experienceService.findById(id);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
+  @RequirePermissions([Permission.EXPERIENCE_UPDATE])
   @Patch(':id')
   @ApiOkResponse({ type: ExperienceResponseDto })
   async update(
@@ -67,7 +67,7 @@ export class ExperienceController {
     return this.experienceService.update(id, body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.EXPERIENCE_DELETE])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(@Param('id', ParseIntPipe) id: number) {

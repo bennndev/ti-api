@@ -22,7 +22,7 @@ export class XRSessionController {
    * POST /experiences/:experienceId/sessions
    * Create a new XR session when user starts an experience
    */
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.EXPERIENCE_SESSION])
   @Post(':experienceId/sessions')
   @HttpCode(HttpStatus.CREATED)
   @ApiOkResponse({ type: XRSessionResponseDto })

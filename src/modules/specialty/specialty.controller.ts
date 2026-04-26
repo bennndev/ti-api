@@ -22,14 +22,14 @@ import { Permission } from '@/modules/role/permissions.enum';
 export class SpecialtyController {
   constructor(private readonly specialtyService: SpecialtyService) {}
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.SPECIALTY_CREATE])
   @Post()
   @ApiOkResponse({ type: SpecialtyResponseDto })
   async create(@Body() body: CreateSpecialtyDto) {
     return this.specialtyService.create(body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.SPECIALTY_READ])
   @Get()
   @ApiOkResponse({ type: SpecialtyResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -50,14 +50,14 @@ export class SpecialtyController {
     });
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.SPECIALTY_READ])
   @Get(':id')
   @ApiOkResponse({ type: SpecialtyResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.specialtyService.findById(id);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.SPECIALTY_UPDATE])
   @Patch(':id')
   @ApiOkResponse({ type: SpecialtyResponseDto })
   async update(
@@ -67,7 +67,7 @@ export class SpecialtyController {
     return this.specialtyService.update(id, body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.SPECIALTY_DELETE])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(@Param('id', ParseIntPipe) id: number) {

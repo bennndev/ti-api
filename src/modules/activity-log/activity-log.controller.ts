@@ -49,7 +49,7 @@ export class ActivityLogController {
    * GET /activity-log
    * List activity logs (with pagination and filters)
    */
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.ACTIVITY_LOG_READ])
   @Get()
   @ApiOkResponse({ type: ActivityLogResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -77,7 +77,7 @@ export class ActivityLogController {
    * GET /activity-log/:id
    * Get a single activity log by ID
    */
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
+  @RequirePermissions([Permission.ACTIVITY_LOG_READ])
   @Get(':id')
   @ApiOkResponse({ type: ActivityLogResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {

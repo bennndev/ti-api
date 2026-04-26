@@ -22,14 +22,14 @@ import { Permission } from '@/modules/role/permissions.enum';
 export class GroupExperienceController {
   constructor(private readonly groupExperienceService: GroupExperienceService) {}
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
+  @RequirePermissions([Permission.GROUP_EXPERIENCE_CREATE])
   @Post()
   @ApiOkResponse({ type: GroupExperienceResponseDto })
   async create(@Body() body: CreateGroupExperienceDto) {
     return this.groupExperienceService.create(body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
+  @RequirePermissions([Permission.GROUP_EXPERIENCE_READ])
   @Get()
   @ApiOkResponse({ type: GroupExperienceResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -53,7 +53,7 @@ export class GroupExperienceController {
     });
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
+  @RequirePermissions([Permission.GROUP_EXPERIENCE_READ])
   @Get(':groupId/:experienceId')
   @ApiOkResponse({ type: GroupExperienceResponseDto })
   async findById(
@@ -63,7 +63,7 @@ export class GroupExperienceController {
     return this.groupExperienceService.findById(groupId, experienceId);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
+  @RequirePermissions([Permission.GROUP_EXPERIENCE_UPDATE])
   @Patch(':groupId/:experienceId')
   @ApiOkResponse({ type: GroupExperienceResponseDto })
   async update(
@@ -74,7 +74,7 @@ export class GroupExperienceController {
     return this.groupExperienceService.update(groupId, experienceId, body);
   }
 
-  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
+  @RequirePermissions([Permission.GROUP_EXPERIENCE_DELETE])
   @Delete(':groupId/:experienceId')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(
