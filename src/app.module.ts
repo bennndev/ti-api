@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { OrganizationModule } from './modules/organization/organization.module';
 import { UsersModule } from './modules/users/users.module';
+import { DepartmentModule } from './modules/department/department.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthGuard } from './guards/auth.guard';
@@ -24,6 +25,7 @@ import { RolesGuard } from './guards/roles.guard';
     AuthModule,
     OrganizationModule,
     UsersModule,
+    DepartmentModule,
     PrismaModule,
   ],
 })
