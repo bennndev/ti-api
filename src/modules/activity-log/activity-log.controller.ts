@@ -16,6 +16,8 @@ import {
   CreateActivityLogBatchDto,
   ActivityLogResponseDto,
 } from './dto';
+import { RequirePermissions } from '@/decorators/permissions.decorator';
+import { Permission } from '@/modules/role/permissions.enum';
 
 @ApiTags('activity-log')
 @Controller('activity-log')
@@ -47,6 +49,7 @@ export class ActivityLogController {
    * GET /activity-log
    * List activity logs (with pagination and filters)
    */
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Get()
   @ApiOkResponse({ type: ActivityLogResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -74,6 +77,7 @@ export class ActivityLogController {
    * GET /activity-log/:id
    * Get a single activity log by ID
    */
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Get(':id')
   @ApiOkResponse({ type: ActivityLogResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {

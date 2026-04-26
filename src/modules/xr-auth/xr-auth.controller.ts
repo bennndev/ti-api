@@ -11,6 +11,7 @@ import { XrAuthService } from './xr-auth.service';
 import { ValidatePinDto, XrTokenResponseDto } from './dto';
 import { Request } from 'express';
 import { SessionUser } from '@/guards/auth.guard';
+import { Public } from '@/decorators/public.decorator';
 
 @ApiTags('xr-auth')
 @Controller('xr-auth')
@@ -21,7 +22,6 @@ export class XrAuthController {
    * Generate PIN for XR device login
    * Called from web interface when user is logged in
    */
-  @Post('generate-pin')
   @HttpCode(HttpStatus.OK)
   async generatePin(@Req() req: Request & { user?: SessionUser }) {
     if (!req.user) {
@@ -40,6 +40,7 @@ export class XrAuthController {
    * Validate PIN and return JWT for XR device
    * Called from XR device with the 6-digit PIN
    */
+  @Public()
   @Post('validate-pin')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: XrTokenResponseDto })

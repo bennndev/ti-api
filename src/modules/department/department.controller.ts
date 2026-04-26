@@ -14,18 +14,22 @@ import {
 import { ApiTags, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { DepartmentService } from './department.service';
 import { CreateDepartmentDto, UpdateDepartmentDto, DepartmentResponseDto } from './dto';
+import { RequirePermissions } from '@/decorators/permissions.decorator';
+import { Permission } from '@/modules/role/permissions.enum';
 
 @ApiTags('departments')
 @Controller('departments')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Post()
   @ApiOkResponse({ type: DepartmentResponseDto })
   async create(@Body() body: CreateDepartmentDto) {
     return this.departmentService.create(body);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Get()
   @ApiOkResponse({ type: DepartmentResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -46,12 +50,14 @@ export class DepartmentController {
     });
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Get(':id')
   @ApiOkResponse({ type: DepartmentResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.departmentService.findById(id);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Patch(':id')
   @ApiOkResponse({ type: DepartmentResponseDto })
   async update(
@@ -61,6 +67,7 @@ export class DepartmentController {
     return this.departmentService.update(id, body);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(@Param('id', ParseIntPipe) id: number) {

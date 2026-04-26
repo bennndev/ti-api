@@ -14,18 +14,22 @@ import {
 import { ApiTags, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { CourseService } from './course.service';
 import { CreateCourseDto, UpdateCourseDto, CourseResponseDto } from './dto';
+import { RequirePermissions } from '@/decorators/permissions.decorator';
+import { Permission } from '@/modules/role/permissions.enum';
 
 @ApiTags('courses')
 @Controller('courses')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Post()
   @ApiOkResponse({ type: CourseResponseDto })
   async create(@Body() body: CreateCourseDto) {
     return this.courseService.create(body);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Get()
   @ApiOkResponse({ type: CourseResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -46,12 +50,14 @@ export class CourseController {
     });
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Get(':id')
   @ApiOkResponse({ type: CourseResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.courseService.findById(id);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Patch(':id')
   @ApiOkResponse({ type: CourseResponseDto })
   async update(
@@ -61,6 +67,7 @@ export class CourseController {
     return this.courseService.update(id, body);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(@Param('id', ParseIntPipe) id: number) {

@@ -13,7 +13,8 @@ import {
 import { ApiTags, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto';
-import { Roles } from '@/decorators/roles.decorator';
+import { RequirePermissions } from '@/decorators/permissions.decorator';
+import { Permission } from '@/modules/role/permissions.enum';
 import { CurrentUser } from '@/decorators/current-user.decorator';
 import type { AuthenticatedRequest } from '@/guards/auth.guard';
 
@@ -22,13 +23,14 @@ import type { AuthenticatedRequest } from '@/guards/auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Post()
-  @Roles(['1']) // super_admin only
   @ApiOkResponse({ type: UserResponseDto })
   async create(@Body() body: CreateUserDto) {
     return this.usersService.create(body);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Get()
   @ApiOkResponse({ type: UserResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -49,12 +51,14 @@ export class UsersController {
     });
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Get(':id')
   @ApiOkResponse({ type: UserResponseDto })
   async findById(@Param('id') id: string) {
     return this.usersService.findById(id);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Patch(':id')
   @ApiOkResponse({ type: UserResponseDto })
   async update(
@@ -65,6 +69,7 @@ export class UsersController {
     return this.usersService.update(id, body, user as any);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(

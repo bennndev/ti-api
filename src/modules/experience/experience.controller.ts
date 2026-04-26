@@ -14,18 +14,22 @@ import {
 import { ApiTags, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { ExperienceService } from './experience.service';
 import { CreateExperienceDto, UpdateExperienceDto, ExperienceResponseDto } from './dto';
+import { RequirePermissions } from '@/decorators/permissions.decorator';
+import { Permission } from '@/modules/role/permissions.enum';
 
 @ApiTags('experiences')
 @Controller('experiences')
 export class ExperienceController {
   constructor(private readonly experienceService: ExperienceService) {}
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Post()
   @ApiOkResponse({ type: ExperienceResponseDto })
   async create(@Body() body: CreateExperienceDto) {
     return this.experienceService.create(body);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Get()
   @ApiOkResponse({ type: ExperienceResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -46,12 +50,14 @@ export class ExperienceController {
     });
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Get(':id')
   @ApiOkResponse({ type: ExperienceResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.experienceService.findById(id);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
   @Patch(':id')
   @ApiOkResponse({ type: ExperienceResponseDto })
   async update(
@@ -61,6 +67,7 @@ export class ExperienceController {
     return this.experienceService.update(id, body);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(@Param('id', ParseIntPipe) id: number) {

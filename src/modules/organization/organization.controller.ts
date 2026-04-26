@@ -18,21 +18,22 @@ import {
   UpdateOrganizationDto,
 } from './dto';
 import { OrganizationResponseDto } from './dto/response-organization.schema';
-import { Public } from '@/decorators/public.decorator';
+import { RequirePermissions } from '@/decorators/permissions.decorator';
+import { Permission } from '@/modules/role/permissions.enum';
 
 @ApiTags('organizations')
 @Controller('organizations')
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 
-  @Public()
+  @RequirePermissions([Permission.SUPER_ADMIN])
   @Post()
   @ApiOkResponse({ type: OrganizationResponseDto })
   async create(@Body() body: CreateOrganizationDto) {
     return this.organizationService.create(body);
   }
 
-  @Public()
+  @RequirePermissions([Permission.SUPER_ADMIN])
   @Get()
   @ApiOkResponse({ type: OrganizationResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -50,14 +51,14 @@ export class OrganizationController {
     });
   }
 
-  @Public()
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Get(':id')
   @ApiOkResponse({ type: OrganizationResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.organizationService.findById(id);
   }
 
-  @Public()
+  @RequirePermissions([Permission.SUPER_ADMIN])
   @Patch(':id')
   @ApiOkResponse({ type: OrganizationResponseDto })
   async update(
@@ -67,7 +68,7 @@ export class OrganizationController {
     return this.organizationService.update(id, body);
   }
 
-  @Public()
+  @RequirePermissions([Permission.SUPER_ADMIN])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(@Param('id', ParseIntPipe) id: number) {

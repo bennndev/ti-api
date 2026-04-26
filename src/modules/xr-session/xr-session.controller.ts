@@ -10,6 +10,8 @@ import {
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { XRSessionService } from './xr-session.service';
 import { CreateXRSessionBodyDto, XRSessionResponseDto } from './dto';
+import { RequirePermissions } from '@/decorators/permissions.decorator';
+import { Permission } from '@/modules/role/permissions.enum';
 
 @ApiTags('experiences')
 @Controller('experiences')
@@ -20,6 +22,7 @@ export class XRSessionController {
    * POST /experiences/:experienceId/sessions
    * Create a new XR session when user starts an experience
    */
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Post(':experienceId/sessions')
   @HttpCode(HttpStatus.CREATED)
   @ApiOkResponse({ type: XRSessionResponseDto })

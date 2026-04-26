@@ -14,18 +14,22 @@ import {
 import { ApiTags, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { UserGroupService } from './user-group.service';
 import { CreateUserGroupDto, UpdateUserGroupDto, UserGroupResponseDto } from './dto';
+import { RequirePermissions } from '@/decorators/permissions.decorator';
+import { Permission } from '@/modules/role/permissions.enum';
 
 @ApiTags('user-groups')
 @Controller('user-groups')
 export class UserGroupController {
   constructor(private readonly userGroupService: UserGroupService) {}
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
   @Post()
   @ApiOkResponse({ type: UserGroupResponseDto })
   async create(@Body() body: CreateUserGroupDto) {
     return this.userGroupService.create(body);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
   @Get()
   @ApiOkResponse({ type: UserGroupResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -49,6 +53,7 @@ export class UserGroupController {
     });
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Get(':userId/:groupId')
   @ApiOkResponse({ type: UserGroupResponseDto })
   async findById(
@@ -58,6 +63,7 @@ export class UserGroupController {
     return this.userGroupService.findById(userId, groupId);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
   @Patch(':userId/:groupId')
   @ApiOkResponse({ type: UserGroupResponseDto })
   async update(
@@ -68,6 +74,7 @@ export class UserGroupController {
     return this.userGroupService.update(userId, groupId, body);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR])
   @Delete(':userId/:groupId')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(

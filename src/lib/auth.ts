@@ -20,12 +20,19 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      disableImplicitSignUp: true,
     },
     apple: {
       clientId: process.env.APPLE_CLIENT_ID!,
       teamId: process.env.APPLE_TEAM_ID!,
       keyId: process.env.APPLE_KEY_ID!,
       privateKey: process.env.APPLE_PRIVATE_KEY!,
+    },
+  },
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ['google'],
     },
   },
   user: {

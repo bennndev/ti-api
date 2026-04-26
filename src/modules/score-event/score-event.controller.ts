@@ -13,18 +13,22 @@ import {
 import { ApiTags, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { ScoreEventService } from './score-event.service';
 import { CreateScoreEventDto, ScoreEventResponseDto } from './dto';
+import { RequirePermissions } from '@/decorators/permissions.decorator';
+import { Permission } from '@/modules/role/permissions.enum';
 
 @ApiTags('score-events')
 @Controller('score-events')
 export class ScoreEventController {
   constructor(private readonly scoreEventService: ScoreEventService) {}
 
+  @RequirePermissions([Permission.STUDENT])
   @Post()
   @ApiOkResponse({ type: ScoreEventResponseDto })
   async create(@Body() body: CreateScoreEventDto) {
     return this.scoreEventService.create(body);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Get()
   @ApiOkResponse({ type: ScoreEventResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -48,12 +52,14 @@ export class ScoreEventController {
     });
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Get('session/:sessionId')
   @ApiOkResponse({ type: ScoreEventResponseDto, isArray: true })
   async findBySessionId(@Param('sessionId') sessionId: string) {
     return this.scoreEventService.findBySessionId(sessionId);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Get('group/:groupId/experience/:experienceId')
   @ApiOkResponse({ type: ScoreEventResponseDto, isArray: true })
   async findByGroupAndExperience(
@@ -63,12 +69,14 @@ export class ScoreEventController {
     return this.scoreEventService.findByGroupAndExperience(groupId, experienceId);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN, Permission.INSTRUCTOR, Permission.STUDENT])
   @Get(':id')
   @ApiOkResponse({ type: ScoreEventResponseDto })
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.scoreEventService.findById(id);
   }
 
+  @RequirePermissions([Permission.SUPER_ADMIN, Permission.ORG_ADMIN])
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id', ParseIntPipe) id: number) {
