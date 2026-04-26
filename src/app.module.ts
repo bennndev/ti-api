@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { OrganizationModule } from './modules/organization/organization.module';
 import { UsersModule } from './modules/users/users.module';
 import { DepartmentModule } from './modules/department/department.module';
+import { SpecialtyModule } from './modules/specialty/specialty.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthGuard } from './guards/auth.guard';
@@ -26,6 +27,7 @@ import { RolesGuard } from './guards/roles.guard';
     OrganizationModule,
     UsersModule,
     DepartmentModule,
+    SpecialtyModule,
     PrismaModule,
   ],
 })
