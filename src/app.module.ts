@@ -13,6 +13,7 @@ import { ExperienceModule } from './modules/experience/experience.module';
 import { GroupModule } from './modules/group/group.module';
 import { UserGroupModule } from './modules/user-group/user-group.module';
 import { GroupExperienceModule } from './modules/group-experience/group-experience.module';
+import { RoleModule } from './modules/role/role.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthGuard } from './guards/auth.guard';
@@ -38,6 +39,7 @@ import { RolesGuard } from './guards/roles.guard';
     GroupModule,
     UserGroupModule,
     GroupExperienceModule,
+    RoleModule,
     PrismaModule,
   ],
 })
