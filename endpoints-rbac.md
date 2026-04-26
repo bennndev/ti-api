@@ -14,8 +14,10 @@ Roles disponibles:
 |--------|------|------------|
 | POST | /auth/sign-up | PUBLIC |
 | POST | /auth/sign-in | PUBLIC |
-| POST | /auth/sign-out | PUBLIC |
-| GET | /auth/me | ??? |
+| POST | /auth/sign-out | PUBLIC* |
+| GET | /auth/me | PUBLIC* |
+
+*sign-out y me requieren autenticación (AuthGuard valida sesión, no rol)
 
 ---
 
@@ -23,11 +25,13 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /organizations | ??? |
-| GET | /organizations | ??? |
-| GET | /organizations/:id | ??? |
-| PATCH | /organizations/:id | ??? |
-| DELETE | /organizations/:id | ??? |
+| POST | /organizations | SUPER_ADMIN |
+| GET | /organizations | SUPER_ADMIN |
+| GET | /organizations/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| PATCH | /organizations/:id | SUPER_ADMIN |
+| DELETE | /organizations/:id | SUPER_ADMIN |
+
+*Verificación de ownership por orgId en el service/repository
 
 ---
 
@@ -35,11 +39,13 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /users | ??? |
-| GET | /users | ??? |
-| GET | /users/:id | ??? |
-| PATCH | /users/:id | ??? |
-| DELETE | /users/:id | ??? |
+| POST | /users | SUPER_ADMIN, ORG_ADMIN |
+| GET | /users | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| GET | /users/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| PATCH | /users/:id | SUPER_ADMIN, ORG_ADMIN |
+| DELETE | /users/:id | SUPER_ADMIN, ORG_ADMIN |
+
+*ORG_ADMIN solo gestiona usuarios de su org. El filtrado va en service/repository.
 
 ---
 
@@ -47,8 +53,8 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| GET | /roles | ??? |
-| GET | /roles/:id | ??? |
+| GET | /roles | SUPER_ADMIN, ORG_ADMIN |
+| GET | /roles/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
 
 ---
 
@@ -56,11 +62,11 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /departments | ??? |
-| GET | /departments | ??? |
-| GET | /departments/:id | ??? |
-| PATCH | /departments/:id | ??? |
-| DELETE | /departments/:id | ??? |
+| POST | /departments | SUPER_ADMIN, ORG_ADMIN |
+| GET | /departments | SUPER_ADMIN, ORG_ADMIN |
+| GET | /departments/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| PATCH | /departments/:id | SUPER_ADMIN, ORG_ADMIN |
+| DELETE | /departments/:id | SUPER_ADMIN, ORG_ADMIN |
 
 ---
 
@@ -68,11 +74,13 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /specialties | ??? |
-| GET | /specialties | ??? |
-| GET | /specialties/:id | ??? |
-| PATCH | /specialties/:id | ??? |
-| DELETE | /specialties/:id | ??? |
+| POST | /specialties | SUPER_ADMIN, ORG_ADMIN |
+| GET | /specialties | SUPER_ADMIN, ORG_ADMIN |
+| GET | /specialties/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| PATCH | /specialties/:id | SUPER_ADMIN, ORG_ADMIN |
+| DELETE | /specialties/:id | SUPER_ADMIN, ORG_ADMIN |
+
+*Verificación de ownership por department/specialty en service/repository
 
 ---
 
@@ -80,11 +88,13 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /courses | ??? |
-| GET | /courses | ??? |
-| GET | /courses/:id | ??? |
-| PATCH | /courses/:id | ??? |
-| DELETE | /courses/:id | ??? |
+| POST | /courses | SUPER_ADMIN, ORG_ADMIN |
+| GET | /courses | SUPER_ADMIN, ORG_ADMIN |
+| GET | /courses/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| PATCH | /courses/:id | SUPER_ADMIN, ORG_ADMIN |
+| DELETE | /courses/:id | SUPER_ADMIN, ORG_ADMIN |
+
+*Instructor/Student ven courses donde tienen Group membership
 
 ---
 
@@ -92,13 +102,15 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /experiences | ??? |
-| GET | /experiences | ??? |
-| GET | /experiences/:id | ??? |
-| PATCH | /experiences/:id | ??? |
-| DELETE | /experiences/:id | ??? |
-| POST | /experiences/:experienceId/sessions | ??? |
-| GET | /experiences/:experienceId/addressable | ??? |
+| POST | /experiences | SUPER_ADMIN, ORG_ADMIN |
+| GET | /experiences | SUPER_ADMIN, ORG_ADMIN |
+| GET | /experiences/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| PATCH | /experiences/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+| DELETE | /experiences/:id | SUPER_ADMIN, ORG_ADMIN |
+| POST | /experiences/:experienceId/sessions | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| GET | /experiences/:experienceId/addressable | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+
+*Instructor no puede crear/eliminar, solo actualizar datos. Student solo ve experiencias asignadas.
 
 ---
 
@@ -106,11 +118,13 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /groups | ??? |
-| GET | /groups | ??? |
-| GET | /groups/:id | ??? |
-| PATCH | /groups/:id | ??? |
-| DELETE | /groups/:id | ??? |
+| POST | /groups | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+| GET | /groups | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+| GET | /groups/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| PATCH | /groups/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+| DELETE | /groups/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+
+*Student solo ve grupos a los que pertenece (no el listado general)
 
 ---
 
@@ -118,11 +132,13 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /user-groups | ??? |
-| GET | /user-groups | ??? |
-| GET | /user-groups/:userId/:groupId | ??? |
-| PATCH | /user-groups/:userId/:groupId | ??? |
-| DELETE | /user-groups/:userId/:groupId | ??? |
+| POST | /user-groups | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+| GET | /user-groups | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+| GET | /user-groups/:userId/:groupId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| PATCH | /user-groups/:userId/:groupId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+| DELETE | /user-groups/:userId/:groupId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+
+*Student solo ve asignaciones de grupos a los que pertenece
 
 ---
 
@@ -130,11 +146,13 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /group-experiences | ??? |
-| GET | /group-experiences | ??? |
-| GET | /group-experiences/:groupId/:experienceId | ??? |
-| PATCH | /group-experiences/:groupId/:experienceId | ??? |
-| DELETE | /group-experiences/:groupId/:experienceId | ??? |
+| POST | /group-experiences | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+| GET | /group-experiences | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+| GET | /group-experiences/:groupId/:experienceId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| PATCH | /group-experiences/:groupId/:experienceId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+| DELETE | /group-experiences/:groupId/:experienceId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+
+*Student solo ve experiencias asignadas a sus grupos
 
 ---
 
@@ -142,12 +160,14 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /score-events | ??? |
-| GET | /score-events | ??? |
-| GET | /score-events/session/:sessionId | ??? |
-| GET | /score-events/group/:groupId/experience/:experienceId | ??? |
-| GET | /score-events/:id | ??? |
-| DELETE | /score-events/:id | ??? |
+| POST | /score-events | STUDENT |
+| GET | /score-events | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| GET | /score-events/session/:sessionId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| GET | /score-events/group/:groupId/experience/:experienceId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| GET | /score-events/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| DELETE | /score-events/:id | SUPER_ADMIN, ORG_ADMIN |
+
+*POST desde Unity/VR authenticado como STUDENT (XR device = estudiante logueado)
 
 ---
 
@@ -155,7 +175,7 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /telemetry/session | ??? |
+| POST | /telemetry/session | STUDENT |
 
 ---
 
@@ -163,8 +183,10 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /xr-auth/generate-pin | ??? |
-| POST | /xr-auth/validate-pin | ??? |
+| POST | /xr-auth/generate-pin | PUBLIC* |
+| POST | /xr-auth/validate-pin | PUBLIC* |
+
+*generate-pin requiere usuario autenticado. validate-pin es público (PIN + device).
 
 ---
 
@@ -172,8 +194,8 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| PATCH | /sessions/:sessionId/complete | ??? |
-| GET | /sessions/:sessionId | ??? |
+| PATCH | /sessions/:sessionId/complete | INSTRUCTOR, STUDENT |
+| GET | /sessions/:sessionId | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
 
 ---
 
@@ -181,11 +203,13 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /addressables | ??? |
-| GET | /addressables | ??? |
-| GET | /addressables/:id | ??? |
-| PATCH | /addressables/:id | ??? |
-| DELETE | /addressables/:id | ??? |
+| POST | /addressables | SUPER_ADMIN, ORG_ADMIN |
+| GET | /addressables | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| GET | /addressables/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR, STUDENT |
+| PATCH | /addressables/:id | SUPER_ADMIN, ORG_ADMIN, INSTRUCTOR |
+| DELETE | /addressables/:id | SUPER_ADMIN, ORG_ADMIN |
+
+*Instructor no puede crear/eliminar, solo modificar y ver. Student solo ve addressables de experiencias asignadas.
 
 ---
 
@@ -193,10 +217,12 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /activity-log | ??? |
-| POST | /activity-log/batch | ??? |
-| GET | /activity-log | ??? |
-| GET | /activity-log/:id | ??? |
+| POST | /activity-log | PUBLIC* |
+| POST | /activity-log/batch | PUBLIC* |
+| GET | /activity-log | SUPER_ADMIN, ORG_ADMIN |
+| GET | /activity-log/:id | SUPER_ADMIN, ORG_ADMIN |
+
+*POST es llamado internamente por el sistema (audit interceptor), no directamente por usuarios.
 
 ---
 
@@ -204,7 +230,7 @@ Roles disponibles:
 
 | Method | Path | Permission |
 |--------|------|------------|
-| GET | / | ??? |
+| GET | / | PUBLIC |
 
 ---
 
