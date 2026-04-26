@@ -16,6 +16,7 @@ import { GroupExperienceModule } from './modules/group-experience/group-experien
 import { ScoreEventModule } from './modules/score-event/score-event.module';
 import { TelemetryModule } from './modules/telemetry/telemetry.module';
 import { RoleModule } from './modules/role/role.module';
+import { RbacModule } from './modules/role/rbac.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { XrAuthModule } from './modules/xr-auth/xr-auth.module';
 import { AddressableModule } from './modules/addressable/addressable.module';
@@ -23,7 +24,7 @@ import { XRSessionModule } from './modules/xr-session/xr-session.module';
 import { ActivityLogModule } from './modules/activity-log/activity-log.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthGuard } from './guards/auth.guard';
-import { RolesGuard } from './guards/roles.guard';
+import { PermissionsGuard } from './guards/permissions.guard';
 
 @Module({
   controllers: [AppController],
@@ -31,7 +32,7 @@ import { RolesGuard } from './guards/roles.guard';
     AppService,
     { provide: APP_PIPE, useClass: ZodValidationPipe },
     { provide: APP_GUARD, useClass: AuthGuard },
-    { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_GUARD, useClass: PermissionsGuard },
   ],
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -48,6 +49,7 @@ import { RolesGuard } from './guards/roles.guard';
     ScoreEventModule,
     TelemetryModule,
     RoleModule,
+    RbacModule,
     XrAuthModule,
     AddressableModule,
     XRSessionModule,
