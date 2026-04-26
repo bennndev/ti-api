@@ -270,6 +270,7 @@ model Experience {
   course        Course           @relation(fields: [courseId], references: [id])
   groupExperiences Group_Experience[]
   addressable   Addressable?
+  xrSessions    XR_Session[]
 
   @@index([courseId])
   @@index([order])
@@ -322,6 +323,7 @@ model Group {
   course           Course            @relation(fields: [courseId], references: [id])
   users            User_Group[]
   groupExperiences Group_Experience[]
+  xrSessions       XR_Session[]
 
   @@index([orgId])
   @@index([courseId])
@@ -432,6 +434,33 @@ model Score_Event {
 
   @@index([groupId, experienceId])
   @@index([sessionId])
+}
+
+model XR_Session {
+  id            String   @id @default(cuid())
+  groupId       Int
+  experienceId  Int
+
+  deviceType    String?  @db.VarChar(50)
+  platform      String?  @db.VarChar(100)
+  ipAddress     String?  @db.VarChar(45)
+
+  startedAt     DateTime @default(now())
+  endedAt       DateTime?
+  status        SessionStatus @default(ACTIVE)
+
+  group         Group     @relation(fields: [groupId], references: [id])
+  experience    Experience @relation(fields: [experienceId], references: [id])
+
+  @@index([groupId])
+  @@index([experienceId])
+  @@index([status])
+}
+
+enum SessionStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
 }
 
 model Phone {

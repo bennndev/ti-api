@@ -19,6 +19,7 @@ import { RoleModule } from './modules/role/role.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { XrAuthModule } from './modules/xr-auth/xr-auth.module';
 import { AddressableModule } from './modules/addressable/addressable.module';
+import { XRSessionModule } from './modules/xr-session/xr-session.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthGuard } from './guards/auth.guard';
 import { RolesGuard } from './guards/roles.guard';
@@ -48,6 +49,7 @@ import { RolesGuard } from './guards/roles.guard';
     RoleModule,
     XrAuthModule,
     AddressableModule,
+    XRSessionModule,
     PrismaModule,
   ],
 })
