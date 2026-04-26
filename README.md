@@ -1,8 +1,15 @@
+![ti-api](https://i.imgur.com/tox031r.png)
+
 # ti-api
 
 API REST para plataforma de aprendizaje XR/VR con gestión organizacional multi-tenant.
 
-**Stack:** NestJS v11 + Prisma 7 + Neon PostgreSQL + Better Auth + Zod
+**Stack:**
+![NestJS](https://img.shields.io/badge/NestJS-v11-E02354?style=flat-square&logo=nestjs)
+![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?style=flat-square&logo=prisma)
+![PostgreSQL](https://img.shields.io/badge/Neon%20PostgreSQL-4169E1?style=flat-square&logo=postgresql)
+![Better Auth](https://img.shields.io/badge/Better%20Auth-1.6-000000?style=flat-square)
+![Zod](https://img.shields.io/badge/Zod-v4-3E67BB?style=flat-square)
 
 ---
 
@@ -149,7 +156,6 @@ Organization (tenant root)
 
 | Method | Path | Permission |
 |--------|------|------------|
-| POST | /auth/sign-up | PUBLIC |
 | POST | /auth/sign-in | PUBLIC |
 | POST | /auth/sign-out | PUBLIC* |
 | GET | /auth/me | PUBLIC* |
@@ -363,7 +369,6 @@ src/
 
 Better Auth maneja:
 
-- `POST /auth/sign-up` — registro email/password
 - `POST /auth/sign-in` — login email/password
 - `POST /auth/sign-out` — logout
 - `GET /auth/google` — redirect OAuth Google
