@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { betterAuth } from 'better-auth/minimal';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { bearer } from 'better-auth/plugins';
 import { PrismaClient } from '@/generated/prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
 
@@ -39,6 +40,7 @@ export const auth = betterAuth({
       preferredLanguage: { type: 'string', required: false },
     },
   },
+  plugins: [bearer()],
   databaseHooks: {
     user: {
       create: {
