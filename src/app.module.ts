@@ -10,6 +10,7 @@ import { DepartmentModule } from './modules/department/department.module';
 import { SpecialtyModule } from './modules/specialty/specialty.module';
 import { CourseModule } from './modules/course/course.module';
 import { ExperienceModule } from './modules/experience/experience.module';
+import { GroupModule } from './modules/group/group.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthGuard } from './guards/auth.guard';
@@ -32,6 +33,7 @@ import { RolesGuard } from './guards/roles.guard';
     SpecialtyModule,
     CourseModule,
     ExperienceModule,
+    GroupModule,
     PrismaModule,
   ],
 })
