@@ -13,6 +13,8 @@ import { ExperienceModule } from './modules/experience/experience.module';
 import { GroupModule } from './modules/group/group.module';
 import { UserGroupModule } from './modules/user-group/user-group.module';
 import { GroupExperienceModule } from './modules/group-experience/group-experience.module';
+import { ScoreEventModule } from './modules/score-event/score-event.module';
+import { TelemetryModule } from './modules/telemetry/telemetry.module';
 import { RoleModule } from './modules/role/role.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { XrAuthModule } from './modules/xr-auth/xr-auth.module';
@@ -40,6 +42,8 @@ import { RolesGuard } from './guards/roles.guard';
     GroupModule,
     UserGroupModule,
     GroupExperienceModule,
+    ScoreEventModule,
+    TelemetryModule,
     RoleModule,
     XrAuthModule,
     PrismaModule,

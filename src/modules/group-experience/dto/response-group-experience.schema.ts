@@ -19,6 +19,9 @@ export const groupExperienceResponseSchema = z.object({
   ipAddress: z.string().nullable(),
   sessionId: z.string().nullable(),
   errorCount: z.number().int(),
+  endReason: z.enum(['completed', 'abandoned', 'crashed', 'timeout', 'user_exit']).nullable(),
+  endedAt: z.string().datetime().nullable(),
+  totalTimeSeconds: z.number().int().nullable(),
 });
 
 export class GroupExperienceResponseDto extends createZodDto(groupExperienceResponseSchema) {}

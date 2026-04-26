@@ -366,6 +366,12 @@ model Group_Experience {
 
   errorCount    Int       @default(0)
 
+  endReason        SessionEndReason?
+  endedAt          DateTime?
+  totalTimeSeconds Int?
+
+  scoreEvents Score_Event[]
+
   group     Group     @relation(fields: [groupId], references: [id])
   experience Experience @relation(fields: [experienceId], references: [id])
 
@@ -384,6 +390,32 @@ enum DeviceType {
   DESKTOP
   MOBILE
   TABLET
+}
+
+enum SessionEndReason {
+  completed
+  abandoned
+  crashed
+  timeout
+  user_exit
+}
+
+model Score_Event {
+  id            Int       @id @default(autoincrement())
+  groupId       Int
+  experienceId  Int
+  sessionId     String    @db.VarChar(100)
+
+  eventId       String    @db.VarChar(50)
+  label         String?   @db.VarChar(100)
+  scoreDelta    Float
+  metadata      Json?
+  occurredAt    DateTime  @default(now())
+
+  groupExperience Group_Experience @relation(fields: [groupId, experienceId], references: [groupId, experienceId])
+
+  @@index([groupId, experienceId])
+  @@index([sessionId])
 }
 
 model Phone {

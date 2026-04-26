@@ -17,6 +17,9 @@ export const updateGroupExperienceSchema = z.object({
   ipAddress: z.string().max(45).optional(),
   sessionId: z.string().max(100).optional(),
   errorCount: z.number().int().nonnegative().optional(),
+  endReason: z.enum(['completed', 'abandoned', 'crashed', 'timeout', 'user_exit']).optional(),
+  endedAt: z.string().datetime().optional(),
+  totalTimeSeconds: z.number().int().nonnegative().optional(),
 });
 
 export class UpdateGroupExperienceDto extends createZodDto(updateGroupExperienceSchema) {}

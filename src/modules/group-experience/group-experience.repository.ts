@@ -11,8 +11,9 @@ export class GroupExperienceRepository {
     take?: number;
     where?: Prisma.Group_ExperienceWhereInput;
     orderBy?: Prisma.Group_ExperienceOrderByWithRelationInput;
+    include?: Prisma.Group_ExperienceInclude;
   }): Promise<{ data: Group_Experience[]; total: number }> {
-    const { skip = 0, take = 20, where, orderBy } = params;
+    const { skip = 0, take = 20, where, orderBy, include } = params;
 
     const [data, total] = await Promise.all([
       this.prisma.group_Experience.findMany({
@@ -20,6 +21,7 @@ export class GroupExperienceRepository {
         take,
         where,
         orderBy: orderBy ?? { groupId: 'asc' },
+        include,
       }),
       this.prisma.group_Experience.count({ where }),
     ]);
@@ -27,9 +29,10 @@ export class GroupExperienceRepository {
     return { data, total };
   }
 
-  async findById(groupId: number, experienceId: number): Promise<Group_Experience | null> {
+  async findById(groupId: number, experienceId: number, include?: Prisma.Group_ExperienceInclude): Promise<Group_Experience | null> {
     return this.prisma.group_Experience.findUnique({
       where: { groupId_experienceId: { groupId, experienceId } },
+      include,
     });
   }
 

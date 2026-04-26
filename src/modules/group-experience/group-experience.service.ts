@@ -70,6 +70,13 @@ export class GroupExperienceService {
       ...dto,
       startedAt: dto.startedAt ? new Date(dto.startedAt) : undefined,
       completedAt: dto.completedAt ? new Date(dto.completedAt) : undefined,
+      endedAt: dto.endedAt ? new Date(dto.endedAt) : undefined,
+    });
+  }
+
+  async findByIdWithScoreEvents(groupId: number, experienceId: number): Promise<any> {
+    return this.groupExperienceRepository.findById(groupId, experienceId, {
+      scoreEvents: true,
     });
   }
 
