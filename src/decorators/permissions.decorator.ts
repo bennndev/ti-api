@@ -1,5 +1,6 @@
-import { Reflector } from '@nestjs/core';
+import { SetMetadata } from '@nestjs/common';
 import { Permission } from '../modules/role/permissions.enum';
 
 export const PERMISSIONS_KEY = 'permissions';
-export const RequirePermissions = Reflector.createDecorator<Permission[]>();
+export const RequirePermissions = (permissions: Permission[]) =>
+  SetMetadata(PERMISSIONS_KEY, permissions);
