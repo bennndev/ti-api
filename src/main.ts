@@ -14,8 +14,10 @@ async function bootstrap() {
 
   // Enable CORS for frontend on port 3001
   app.enableCors({
-    origin: 'http://localhost:3001',
+    origin: ['http://localhost:3000', 'http://localhost:3001'],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   // Mount Better Auth routes on /better-auth/* BEFORE other routes
