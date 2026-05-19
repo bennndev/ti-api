@@ -20,6 +20,9 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
+  // Global prefix for all NestJS routes
+  app.setGlobalPrefix('api');
+
   // Mount Better Auth routes on /better-auth/* BEFORE other routes
   const expressApp = app.getHttpAdapter().getInstance();
   expressApp.all('/better-auth/{*splat}', toNodeHandler(auth));
@@ -29,7 +32,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, cleanupOpenApiDoc(document));
+  SwaggerModule.setup('docs', app, cleanupOpenApiDoc(document));
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
