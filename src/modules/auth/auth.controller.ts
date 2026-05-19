@@ -1,6 +1,7 @@
 import { Controller, Post, Get, Req, Body } from '@nestjs/common';
 import type { IncomingHttpHeaders } from 'http';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.schema';
 import { SignInDto } from './dto/sign-in.schema';
@@ -15,6 +16,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @Throttle({
+    default: { ttl: 60000, limit: 3 },
+  })
   @Post('sign-up')
   @ApiOkResponse({ type: UserResponseDto })
   async signUp(@Body() body: SignUpDto) {
@@ -22,6 +26,9 @@ export class AuthController {
   }
 
   @Public()
+  @Throttle({
+    default: { ttl: 60000, limit: 5 },
+  })
   @Post('sign-in')
   @ApiOkResponse({ type: UserResponseDto })
   async signIn(@Body() body: SignInDto) {

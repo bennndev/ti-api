@@ -7,6 +7,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { XrAuthService } from './xr-auth.service';
 import { ValidatePinDto, XrTokenResponseDto } from './dto';
 import { Request } from 'express';
@@ -23,9 +24,15 @@ export class XrAuthController {
    * Called from web interface when user is logged in
    */
   @HttpCode(HttpStatus.OK)
+  @Throttle({
+    default: { ttl: 60000, limit: 10 },
+  })
   async generatePin(@Req() req: Request & { user?: SessionUser }) {
     if (!req.user) {
-      return { error: 'Unauthorized', message: 'Must be logged in to generate PIN' };
+      return {
+        error: 'Unauthorized',
+        message: 'Must be logged in to generate PIN',
+      };
     }
 
     const pin = await this.xrAuthService.generatePin(req.user.id);
@@ -41,6 +48,9 @@ export class XrAuthController {
    * Called from XR device with the 6-digit PIN
    */
   @Public()
+  @Throttle({
+    default: { ttl: 60000, limit: 3 },
+  })
   @Post('validate-pin')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: XrTokenResponseDto })

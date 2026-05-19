@@ -11,6 +11,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto';
 import { RequirePermissions } from '@/decorators/permissions.decorator';
@@ -24,6 +25,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @RequirePermissions([Permission.USER_CREATE])
+  @Throttle({
+    default: { ttl: 60000, limit: 200 },
+  })
   @Post()
   @ApiOkResponse({ type: UserResponseDto })
   async create(@Body() body: CreateUserDto) {
