@@ -315,29 +315,34 @@ Organization (tenant root)
 
 ---
 
-## Comandos
+## Testing
+
+### Unit Tests (Jest)
 
 ```bash
-# Desarrollo
-npm run start:dev        # watch mode
-npm run start            # normal
+npm run test                # Run all unit tests
+npm run test:cov            # Run with coverage report
+npm run test:watch          # Watch mode (re-runs on save)
+```
 
-# Producción
-npm run build
-npm run start:prod
+### E2E Tests (Supertest)
 
-# Prisma
-npx prisma migrate dev   # crear migración
-npx prisma generate      # generar client
-npm run db:push          # push schema sin migration
+```bash
+npm run test:e2e            # Run end-to-end tests
+```
 
-# Calidad
-npm run lint
-npm run format
+### VS Code
 
-# Tests
-npm run test
-npm run test:e2e
+Install the "Jest" extension (Orta Therox). Open any `.spec.ts` file and click ▶️
+to run individual tests. Results appear in the Testing sidebar.
+
+### Test Structure
+
+```
+src/modules/{modulo}/
+├── {servicio}.spec.ts          # Service logic tests (mocked dependencies)
+└── dto/
+    └── {schema}.spec.ts         # Zod validation tests (schema parsing)
 ```
 
 ---
