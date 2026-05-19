@@ -10,6 +10,7 @@ API REST para plataforma de aprendizaje XR/VR con gestión organizacional multi-
   <img src="https://img.shields.io/badge/Neon%20PostgreSQL-4169E1?style=flat-square&logo=postgresql" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/Better%20Auth-1.6-000000?style=flat-square" alt="Better Auth">
   <img src="https://img.shields.io/badge/Zod-v4-3E67BB?style=flat-square" alt="Zod">
+  <img src="https://img.shields.io/badge/Throttler-6.x-FF6600?style=flat-square&logo=nestjs" alt="Throttler">
 </p>
 
 ---
