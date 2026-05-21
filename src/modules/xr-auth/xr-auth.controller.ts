@@ -23,6 +23,7 @@ export class XrAuthController {
    * Generate PIN for XR device login
    * Called from web interface when user is logged in
    */
+  @Post('generate-pin')
   @HttpCode(HttpStatus.OK)
   @Throttle({
     default: { ttl: 60000, limit: 10 },

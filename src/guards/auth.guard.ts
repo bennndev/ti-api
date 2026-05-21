@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { auth } from '@/lib/auth';
-import { fromNodeHeaders } from 'better-auth/node';
 import { IS_PUBLIC_KEY } from '@/decorators/public.decorator';
 import { PrismaService } from '@/lib/prisma';
 
@@ -26,15 +25,21 @@ export class AuthGuard implements CanActivate {
     if (isPublic) return true;
 
     const request = context.switchToHttp().getRequest();
+
+    // Construir Headers nativo con la cookie del request
+    const cookieHeader = request.headers.cookie ?? '';
+
     const session = await auth.api.getSession({
-      headers: fromNodeHeaders(request.headers),
+      headers: new Headers({
+        cookie: cookieHeader,
+      }),
     });
 
     if (!session) {
       throw new UnauthorizedException('No active session');
     }
 
-    // Fetch user from DB to get roleId and orgId (Better Auth session doesn't include custom fields)
+    // Fetch user from DB to get custom fields (roleId, orgId, etc.)
     const user = await this.prisma.user.findUnique({
       where: { id: session.user.id },
       select: {
@@ -56,6 +61,7 @@ export class AuthGuard implements CanActivate {
       ...session.user,
       ...user,
     };
+    request.session = session.session;
 
     return true;
   }

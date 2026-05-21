@@ -17,15 +17,15 @@ async function bootstrap() {
     origin: ['http://localhost:3000', 'http://localhost:3001'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
   });
 
   // Global prefix for all NestJS routes
   app.setGlobalPrefix('api');
 
-  // Mount Better Auth routes on /better-auth/* BEFORE other routes
+  // Mount Better Auth routes on /api/auth/*
   const expressApp = app.getHttpAdapter().getInstance();
-  expressApp.all('/better-auth/{*splat}', toNodeHandler(auth));
+  expressApp.use('/api/auth', toNodeHandler(auth));
 
   const config = new DocumentBuilder()
     .setTitle('ti-api')

@@ -17,12 +17,16 @@ import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto';
 import { RequirePermissions } from '@/decorators/permissions.decorator';
 import { Permission } from '@/modules/role/permissions.enum';
 import { CurrentUser } from '@/decorators/current-user.decorator';
+import { RoleRepository } from '@/modules/role/role.repository';
 import type { AuthenticatedRequest } from '@/guards/auth.guard';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly roleRepository: RoleRepository,
+  ) {}
 
   @RequirePermissions([Permission.USER_CREATE])
   @Throttle({
@@ -53,6 +57,30 @@ export class UsersController {
       orgId: orgId ? Number(orgId) : undefined,
       status: status !== undefined ? status === 'true' : undefined,
     });
+  }
+
+  @Get('me')
+  @ApiOkResponse({ type: UserResponseDto })
+  async me(@CurrentUser() user: AuthenticatedRequest['user']) {
+    if (!user) {
+      return null;
+    }
+
+    let role: { id: number; name: string; code: string; description: string | null } | null = null;
+    if (user.roleId) {
+      role = await this.roleRepository.findById(user.roleId);
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      emailVerified: user.emailVerified,
+      orgId: user.orgId,
+      roleId: user.roleId,
+      username: user.username,
+      role: role ? { id: role.id, name: role.name, code: role.code, description: role.description } : null,
+    };
   }
 
   @RequirePermissions([Permission.USER_READ])
