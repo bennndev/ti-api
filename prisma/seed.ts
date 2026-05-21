@@ -152,6 +152,10 @@ const roles = [
       'addressable:read', 'addressable:update',
       // Role (read only)
       'role:read',
+      // Course/Department/Specialty (read only - browse structure)
+      'course:read',
+      'department:read',
+      'specialty:read',
     ],
   },
   {
@@ -165,6 +169,7 @@ const roles = [
       'role:read',
       // Experience
       'experience:session',
+      'experience:read',
       // Group (read only - own groups)
       'group:read',
       // User-Group (read only - own memberships)
@@ -179,6 +184,8 @@ const roles = [
       'addressable:read',
       // Telemetry
       'telemetry:create',
+      // Course (read only)
+      'course:read',
     ],
   },
 ];
