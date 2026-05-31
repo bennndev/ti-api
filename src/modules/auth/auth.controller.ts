@@ -5,6 +5,7 @@ import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.schema';
 import { SignInDto } from './dto/sign-in.schema';
+import { ChangePasswordDto } from './dto/change-password.schema';
 import { Public } from '@/decorators/public.decorator';
 import { CurrentUser } from '@/decorators/current-user.decorator';
 import { UserResponseDto } from '@/modules/users/dto/response-user.schema';
@@ -40,6 +41,17 @@ export class AuthController {
   async signOut(@Req() req: Request) {
     return this.authService.signOut(
       req.headers as unknown as IncomingHttpHeaders,
+    );
+  }
+
+  @Post('change-password')
+  async changePassword(
+    @Req() req: Request,
+    @Body() body: ChangePasswordDto,
+  ) {
+    return this.authService.changePassword(
+      req.headers as unknown as IncomingHttpHeaders,
+      body,
     );
   }
 

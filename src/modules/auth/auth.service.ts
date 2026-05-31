@@ -4,6 +4,7 @@ import { fromNodeHeaders } from 'better-auth/node';
 import type { IncomingHttpHeaders } from 'http';
 import type { SignUpDto } from './dto/sign-up.schema';
 import type { SignInDto } from './dto/sign-in.schema';
+import type { ChangePasswordDto } from './dto/change-password.schema';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +25,13 @@ export class AuthService {
   async signOut(headers: IncomingHttpHeaders) {
     return auth.api.signOut({
       headers: fromNodeHeaders(headers),
+    });
+  }
+
+  async changePassword(headers: IncomingHttpHeaders, dto: ChangePasswordDto) {
+    return auth.api.changePassword({
+      headers: fromNodeHeaders(headers),
+      body: dto as any,
     });
   }
 
