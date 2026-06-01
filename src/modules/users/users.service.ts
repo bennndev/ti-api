@@ -58,6 +58,7 @@ export class UsersService {
     page?: number;
     pageSize?: number;
     orgId?: number;
+    roleId?: number;
     status?: boolean;
   }) {
     const page = params.page ?? 1;
@@ -65,6 +66,7 @@ export class UsersService {
 
     const where: any = {};
     if (params.orgId !== undefined) where.orgId = params.orgId;
+    if (params.roleId !== undefined) where.roleId = params.roleId;
     if (params.status !== undefined) where.status = params.status;
 
     const { data, total } = await this.usersRepository.findMany({
