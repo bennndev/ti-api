@@ -25,6 +25,7 @@ export class UsersRepository {
         take,
         where: whereClause,
         orderBy: orderBy ?? { createdAt: 'desc' },
+        include: { specialty: { select: { id: true, code: true, name: true } } },
       }),
       this.prisma.user.count({ where: whereClause }),
     ]);
@@ -35,6 +36,7 @@ export class UsersRepository {
   async findById(id: string): Promise<User | null> {
     return this.prisma.user.findFirst({
       where: { id, deletedAt: null },
+      include: { specialty: { select: { id: true, code: true, name: true } } },
     });
   }
 

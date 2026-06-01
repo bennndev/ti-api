@@ -13,16 +13,18 @@ export class CourseService {
     page?: number;
     pageSize?: number;
     specialtyId?: number;
+    orgId?: number;
     status?: boolean;
   }): Promise<{
     data: any[];
     meta: { page: number; pageSize: number; total: number; totalPages: number };
   }> {
-    const { page = 1, pageSize = 20, specialtyId, status } = params;
+    const { page = 1, pageSize = 20, specialtyId, orgId, status } = params;
     const skip = (page - 1) * pageSize;
 
     const where: Prisma.CourseWhereInput = {};
     if (specialtyId !== undefined) where.specialtyId = specialtyId;
+    if (orgId !== undefined) where.specialty = { department: { orgId } };
     if (status !== undefined) where.status = status;
 
     const { data, total } = await this.courseRepository.findMany({

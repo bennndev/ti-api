@@ -13,16 +13,18 @@ export class SpecialtyService {
     page?: number;
     pageSize?: number;
     departmentId?: number;
+    orgId?: number;
     status?: boolean;
   }): Promise<{
     data: any[];
     meta: { page: number; pageSize: number; total: number; totalPages: number };
   }> {
-    const { page = 1, pageSize = 20, departmentId, status } = params;
+    const { page = 1, pageSize = 20, departmentId, orgId, status } = params;
     const skip = (page - 1) * pageSize;
 
     const where: Prisma.SpecialtyWhereInput = {};
     if (departmentId !== undefined) where.departmentId = departmentId;
+    if (orgId !== undefined) where.department = { orgId };
     if (status !== undefined) where.status = status;
 
     const { data, total } = await this.specialtyRepository.findMany({

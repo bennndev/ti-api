@@ -35,17 +35,20 @@ export class SpecialtyController {
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'pageSize', required: false, type: Number })
   @ApiQuery({ name: 'departmentId', required: false, type: Number })
+  @ApiQuery({ name: 'orgId', required: false, type: Number })
   @ApiQuery({ name: 'status', required: false, type: Boolean })
   async findAll(
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
     @Query('departmentId') departmentId?: string,
+    @Query('orgId') orgId?: string,
     @Query('status') status?: string,
   ) {
     return this.specialtyService.findAll({
       page: page ? Number(page) : undefined,
       pageSize: pageSize ? Number(pageSize) : undefined,
       departmentId: departmentId ? Number(departmentId) : undefined,
+      orgId: orgId ? Number(orgId) : undefined,
       status: status !== undefined ? status === 'true' : undefined,
     });
   }

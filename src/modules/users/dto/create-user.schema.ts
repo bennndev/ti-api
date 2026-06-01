@@ -13,6 +13,9 @@ export const createUserSchema = z.object({
   documentType: z.string().max(4).optional(),
   documentNumber: z.string().max(20).optional(),
   preferredLanguage: z.string().max(10).optional(),
+  phone: z.string().regex(/^\d{7,15}$/).optional(),
+  position: z.string().min(1).max(100).optional(),
+  specialtyId: z.number().int().positive().optional(),
 });
 
 export class CreateUserDto extends createZodDto(createUserSchema) {}

@@ -36,6 +36,9 @@ export class UsersService {
         preferredLanguage: dto.preferredLanguage,
         orgId: dto.orgId,
         roleId: dto.roleId,
+        position: dto.position,
+        phone: dto.phone,
+        specialtyId: dto.specialtyId,
       },
     });
 
@@ -43,6 +46,9 @@ export class UsersService {
     await this.usersRepository.update(result.user.id as string, {
       orgId: dto.orgId,
       roleId: dto.roleId,
+      position: dto.position,
+      phone: dto.phone,
+      specialtyId: dto.specialtyId,
     } as any);
 
     return this.findById(result.user.id as string);
@@ -128,6 +134,10 @@ export class UsersService {
       lastName: user.lastName ?? null,
       roleId: user.roleId ?? null,
       orgId: user.orgId ?? null,
+      position: user.position ?? null,
+      phone: user.phone ?? null,
+      specialtyId: user.specialtyId ?? null,
+      specialty: user.specialty ?? null,
       emailVerified: user.emailVerified ?? false,
       status: user.status ?? true,
       createdAt: user.createdAt?.toISOString() ?? new Date().toISOString(),

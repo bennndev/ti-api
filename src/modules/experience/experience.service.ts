@@ -13,16 +13,18 @@ export class ExperienceService {
     page?: number;
     pageSize?: number;
     courseId?: number;
+    orgId?: number;
     status?: string;
   }): Promise<{
     data: any[];
     meta: { page: number; pageSize: number; total: number; totalPages: number };
   }> {
-    const { page = 1, pageSize = 20, courseId, status } = params;
+    const { page = 1, pageSize = 20, courseId, orgId, status } = params;
     const skip = (page - 1) * pageSize;
 
     const where: Prisma.ExperienceWhereInput = {};
     if (courseId !== undefined) where.courseId = courseId;
+    if (orgId !== undefined) where.course = { specialty: { department: { orgId } } };
     if (status !== undefined) where.status = status as any;
 
     const { data, total } = await this.experienceRepository.findMany({

@@ -35,17 +35,20 @@ export class ExperienceController {
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'pageSize', required: false, type: Number })
   @ApiQuery({ name: 'courseId', required: false, type: Number })
+  @ApiQuery({ name: 'orgId', required: false, type: Number })
   @ApiQuery({ name: 'status', required: false, type: String })
   async findAll(
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
     @Query('courseId') courseId?: string,
+    @Query('orgId') orgId?: string,
     @Query('status') status?: string,
   ) {
     return this.experienceService.findAll({
       page: page ? Number(page) : undefined,
       pageSize: pageSize ? Number(pageSize) : undefined,
       courseId: courseId ? Number(courseId) : undefined,
+      orgId: orgId ? Number(orgId) : undefined,
       status,
     });
   }

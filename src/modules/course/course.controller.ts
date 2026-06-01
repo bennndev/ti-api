@@ -35,17 +35,20 @@ export class CourseController {
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'pageSize', required: false, type: Number })
   @ApiQuery({ name: 'specialtyId', required: false, type: Number })
+  @ApiQuery({ name: 'orgId', required: false, type: Number })
   @ApiQuery({ name: 'status', required: false, type: Boolean })
   async findAll(
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
     @Query('specialtyId') specialtyId?: string,
+    @Query('orgId') orgId?: string,
     @Query('status') status?: string,
   ) {
     return this.courseService.findAll({
       page: page ? Number(page) : undefined,
       pageSize: pageSize ? Number(pageSize) : undefined,
       specialtyId: specialtyId ? Number(specialtyId) : undefined,
+      orgId: orgId ? Number(orgId) : undefined,
       status: status !== undefined ? status === 'true' : undefined,
     });
   }
