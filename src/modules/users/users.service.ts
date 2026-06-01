@@ -134,6 +134,8 @@ export class UsersService {
       name: user.name ?? null,
       firstName: user.firstName ?? null,
       lastName: user.lastName ?? null,
+      documentType: user.documentType ?? null,
+      documentNumber: user.documentNumber ?? null,
       roleId: user.roleId ?? null,
       orgId: user.orgId ?? null,
       position: user.position ?? null,

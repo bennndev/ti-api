@@ -8,6 +8,8 @@ export const userResponseSchema = z.object({
   name: z.string().nullable(),
   firstName: z.string().nullable(),
   lastName: z.string().nullable(),
+  documentType: z.string().nullable(),
+  documentNumber: z.string().nullable(),
   roleId: z.number().int().nullable(),
   orgId: z.number().int().nullable(),
   position: z.string().nullable(),
