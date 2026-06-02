@@ -2,30 +2,42 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { GroupExperienceRepository } from './group-experience.repository';
 import { CreateGroupExperienceDto, UpdateGroupExperienceDto } from './dto';
 import { Prisma } from '@/generated/prisma/client';
+import { PrismaService } from '@/lib/prisma';
 
 @Injectable()
 export class GroupExperienceService {
   private readonly logger = new Logger(GroupExperienceService.name);
 
-  constructor(private readonly groupExperienceRepository: GroupExperienceRepository) {}
+  constructor(
+    private readonly groupExperienceRepository: GroupExperienceRepository,
+    private readonly prisma: PrismaService,
+  ) {}
 
   async findAll(params: {
     page?: number;
     pageSize?: number;
     groupId?: number;
     experienceId?: number;
+    userId?: string;
     status?: string;
   }): Promise<{
     data: any[];
     meta: { page: number; pageSize: number; total: number; totalPages: number };
   }> {
-    const { page = 1, pageSize = 20, groupId, experienceId, status } = params;
+    const { page = 1, pageSize = 20, groupId, experienceId, userId, status } = params;
     const skip = (page - 1) * pageSize;
 
     const where: Prisma.Group_ExperienceWhereInput = {};
     if (groupId !== undefined) where.groupId = groupId;
     if (experienceId !== undefined) where.experienceId = experienceId;
     if (status !== undefined) where.status = status as any;
+    if (userId !== undefined) {
+      const userGroups = await this.prisma.user_Group.findMany({
+        where: { userId },
+        select: { groupId: true },
+      });
+      where.groupId = { in: userGroups.map((g) => g.groupId) };
+    }
 
     const { data, total } = await this.groupExperienceRepository.findMany({
       skip,

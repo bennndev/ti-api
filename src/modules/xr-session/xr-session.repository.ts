@@ -6,6 +6,29 @@ import { Prisma, XR_Session } from '@/generated/prisma/client';
 export class XRSessionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findMany(params: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.XR_SessionWhereInput;
+    orderBy?: Prisma.XR_SessionOrderByWithRelationInput;
+  }): Promise<{ data: XR_Session[]; total: number }> {
+    const { skip = 0, take = 20, where, orderBy } = params;
+    const [data, total] = await Promise.all([
+      this.prisma.xR_Session.findMany({
+        skip,
+        take,
+        where,
+        orderBy: orderBy ?? { startedAt: 'desc' },
+        include: {
+          group: { select: { id: true, name: true } },
+          experience: { select: { id: true, name: true } },
+        },
+      }),
+      this.prisma.xR_Session.count({ where }),
+    ]);
+    return { data, total };
+  }
+
   async findById(id: string): Promise<XR_Session | null> {
     return this.prisma.xR_Session.findUnique({
       where: { id },

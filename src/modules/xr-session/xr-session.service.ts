@@ -42,6 +42,45 @@ export class XRSessionService {
     return session;
   }
 
+  async findAll(params: {
+    page?: number;
+    pageSize?: number;
+    userId?: string;
+    status?: string;
+  }): Promise<{
+    data: any[];
+    meta: { page: number; pageSize: number; total: number; totalPages: number };
+  }> {
+    const { page = 1, pageSize = 20, userId, status } = params;
+    const skip = (page - 1) * pageSize;
+
+    const where: any = {};
+    if (status !== undefined) where.status = status;
+    if (userId !== undefined) {
+      const userGroups = await this.prisma.user_Group.findMany({
+        where: { userId },
+        select: { groupId: true },
+      });
+      where.groupId = { in: userGroups.map((g) => g.groupId) };
+    }
+
+    const { data, total } = await this.xrSessionRepository.findMany({
+      skip,
+      take: pageSize,
+      where,
+    });
+
+    return {
+      data,
+      meta: {
+        page,
+        pageSize,
+        total,
+        totalPages: Math.ceil(total / pageSize),
+      },
+    };
+  }
+
   async complete(sessionId: string, dto: CompleteXRSessionDto): Promise<any> {
     const session = await this.xrSessionRepository.findById(sessionId);
     if (!session) {

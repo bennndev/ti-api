@@ -59,6 +59,13 @@ export class UsersController {
   }
 
   @RequirePermissions([Permission.USER_READ])
+  @Get(':id/dashboard')
+  @ApiOkResponse({ type: UserResponseDto })
+  async getDashboard(@Param('id') id: string) {
+    return this.usersService.getDashboard(id);
+  }
+
+  @RequirePermissions([Permission.USER_READ])
   @Get(':id')
   @ApiOkResponse({ type: UserResponseDto })
   async findById(@Param('id') id: string) {

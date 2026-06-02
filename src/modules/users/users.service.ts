@@ -10,12 +10,16 @@ import { UsersRepository } from './users.repository';
 import type { CreateUserDto } from './dto/create-user.schema';
 import type { UpdateUserDto } from './dto/update-user.schema';
 import type { UserResponseDto } from './dto/response-user.schema';
+import { PrismaService } from '@/lib/prisma';
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private readonly prisma: PrismaService,
+  ) {}
 
   async create(dto: CreateUserDto) {
     const existingByEmail = await this.usersRepository.findByEmail(dto.email);
@@ -89,6 +93,83 @@ export class UsersService {
       throw new NotFoundException(`User #${id} not found`);
     }
     return this.mapToResponse(user);
+  }
+
+  async getDashboard(userId: string) {
+    const memberships = await this.prisma.user_Group.findMany({
+      where: { userId },
+      include: {
+        group: {
+          include: {
+            course: {
+              select: { id: true, name: true },
+            },
+            groupExperiences: {
+              include: {
+                experience: {
+                  select: { id: true, name: true },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const coursesProgress = new Map<number, {
+      courseId: number;
+      courseName: string;
+      totalExperiences: number;
+      completedExperiences: number;
+      experiences: any[];
+    }>();
+
+    for (const membership of memberships) {
+      const course = membership.group.course;
+      if (!coursesProgress.has(course.id)) {
+        coursesProgress.set(course.id, {
+          courseId: course.id,
+          courseName: course.name,
+          totalExperiences: 0,
+          completedExperiences: 0,
+          experiences: [],
+        });
+      }
+
+      const courseEntry = coursesProgress.get(course.id)!;
+      for (const ge of membership.group.groupExperiences) {
+        courseEntry.experiences.push({
+          experienceId: ge.experienceId,
+          experienceName: ge.experience.name,
+          status: ge.status,
+          finalScore: ge.finalScore,
+        });
+        courseEntry.totalExperiences++;
+        if (ge.status === 'COMPLETED') {
+          courseEntry.completedExperiences++;
+        }
+      }
+    }
+
+    const progress = Array.from(coursesProgress.values()).map((c) => ({
+      ...c,
+      percent: c.totalExperiences > 0
+        ? Math.round((c.completedExperiences / c.totalExperiences) * 100)
+        : 0,
+    }));
+
+    return {
+      user: await this.findById(userId),
+      groups: memberships.map((m) => ({
+        groupId: m.group.id,
+        groupName: m.group.name,
+        courseId: m.group.course.id,
+        courseName: m.group.course.name,
+        roleInGroup: m.roleInGroup,
+        status: m.status,
+      })),
+      progress,
+    };
   }
 
   async update(id: string, dto: UpdateUserDto, currentUser: { id: string; orgId: number | null; roleId: number | null }) {

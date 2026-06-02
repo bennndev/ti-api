@@ -36,12 +36,14 @@ export class GroupExperienceController {
   @ApiQuery({ name: 'pageSize', required: false, type: Number })
   @ApiQuery({ name: 'groupId', required: false, type: Number })
   @ApiQuery({ name: 'experienceId', required: false, type: Number })
+  @ApiQuery({ name: 'userId', required: false, type: String })
   @ApiQuery({ name: 'status', required: false, type: String })
   async findAll(
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
     @Query('groupId') groupId?: string,
     @Query('experienceId') experienceId?: string,
+    @Query('userId') userId?: string,
     @Query('status') status?: string,
   ) {
     return this.groupExperienceService.findAll({
@@ -49,6 +51,7 @@ export class GroupExperienceController {
       pageSize: pageSize ? Number(pageSize) : undefined,
       groupId: groupId ? Number(groupId) : undefined,
       experienceId: experienceId ? Number(experienceId) : undefined,
+      userId: userId || undefined,
       status,
     });
   }
