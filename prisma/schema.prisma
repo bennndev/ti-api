@@ -79,6 +79,7 @@ model User {
   sessions  Session[]
   devicePins DevicePin[]
   notifications NotificationPreference[]
+  devices     UserDevice[]
 
   @@index([orgId])
   @@index([username])
@@ -552,4 +553,16 @@ model NotificationPreference {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, key])
+}
+
+model UserDevice {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String   @db.VarChar(100)
+  platform  String   @db.VarChar(50)
+  deviceId  String   @unique @db.VarChar(100)
+  lastSyncAt DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
