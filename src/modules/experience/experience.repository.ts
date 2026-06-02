@@ -18,10 +18,10 @@ export class ExperienceRepository {
       this.prisma.experience.findMany({
         skip,
         take,
-        where,
+        where: { ...where, deletedAt: null },
         orderBy: orderBy ?? { order: 'asc' },
       }),
-      this.prisma.experience.count({ where }),
+      this.prisma.experience.count({ where: { ...where, deletedAt: null } }),
     ]);
 
     return { data, total };
@@ -29,12 +29,12 @@ export class ExperienceRepository {
 
   async findById(id: number): Promise<Experience | null> {
     return this.prisma.experience.findUnique({
-      where: { id },
+      where: { id, deletedAt: null },
     });
   }
 
   async findByCourseId(courseId: number): Promise<{ data: Experience[]; total: number }> {
-    return this.findMany({ where: { courseId } });
+    return this.findMany({ where: { courseId, deletedAt: null } });
   }
 
   async create(data: Prisma.ExperienceCreateInput): Promise<Experience> {
@@ -51,7 +51,7 @@ export class ExperienceRepository {
   async softDelete(id: number): Promise<Experience> {
     return this.prisma.experience.update({
       where: { id },
-      data: { status: 'INACTIVE' as any },
+      data: { deletedAt: new Date() },
     });
   }
 }

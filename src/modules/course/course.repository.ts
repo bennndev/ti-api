@@ -18,10 +18,10 @@ export class CourseRepository {
       this.prisma.course.findMany({
         skip,
         take,
-        where,
+        where: { ...where, deletedAt: null },
         orderBy: orderBy ?? { createdAt: 'desc' },
       }),
-      this.prisma.course.count({ where }),
+      this.prisma.course.count({ where: { ...where, deletedAt: null } }),
     ]);
 
     return { data, total };
@@ -29,12 +29,12 @@ export class CourseRepository {
 
   async findById(id: number): Promise<Course | null> {
     return this.prisma.course.findUnique({
-      where: { id },
+      where: { id, deletedAt: null },
     });
   }
 
   async findBySpecialtyId(specialtyId: number): Promise<{ data: Course[]; total: number }> {
-    return this.findMany({ where: { specialtyId } });
+    return this.findMany({ where: { specialtyId, deletedAt: null } });
   }
 
   async create(data: Prisma.CourseCreateInput): Promise<Course> {
@@ -51,7 +51,7 @@ export class CourseRepository {
   async softDelete(id: number): Promise<Course> {
     return this.prisma.course.update({
       where: { id },
-      data: { updatedAt: new Date() },
+      data: { deletedAt: new Date() },
     });
   }
 }

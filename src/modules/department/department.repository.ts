@@ -16,6 +16,7 @@ export class DepartmentRepository {
 
     const whereClause: Prisma.DepartmentWhereInput = {
       ...where,
+      deletedAt: null,
     };
 
     const [data, total] = await Promise.all([
@@ -33,7 +34,7 @@ export class DepartmentRepository {
 
   async findById(id: number): Promise<Department | null> {
     return this.prisma.department.findUnique({
-      where: { id },
+      where: { id, deletedAt: null },
     });
   }
 
@@ -55,7 +56,7 @@ export class DepartmentRepository {
   async softDelete(id: number): Promise<Department> {
     return this.prisma.department.update({
       where: { id },
-      data: { updatedAt: new Date() },
+      data: { deletedAt: new Date() },
     });
   }
 }

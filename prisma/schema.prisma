@@ -204,6 +204,7 @@ model Department {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
   org       Organization @relation(fields: [orgId], references: [id])
   specialties Specialty[]
@@ -223,6 +224,7 @@ model Specialty {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
   department Department @relation(fields: [departmentId], references: [id])
   courses    Course[]
@@ -242,6 +244,7 @@ model Course {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
   specialty   Specialty         @relation(fields: [specialtyId], references: [id])
   experiences Experience[]
@@ -275,6 +278,7 @@ model Experience {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
   course        Course           @relation(fields: [courseId], references: [id])
   groupExperiences Group_Experience[]
