@@ -23,6 +23,7 @@ import { AddressableModule } from './modules/addressable/addressable.module';
 import { XRSessionModule } from './modules/xr-session/xr-session.module';
 import { ActivityLogModule } from './modules/activity-log/activity-log.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { ContactModule } from './modules/contact/contact.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthGuard } from './guards/auth.guard';
 import { PermissionsGuard } from './guards/permissions.guard';
@@ -56,6 +57,7 @@ import { PermissionsGuard } from './guards/permissions.guard';
     XRSessionModule,
     ActivityLogModule,
     NotificationModule,
+    ContactModule,
     PrismaModule,
   ],
 })
