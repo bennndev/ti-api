@@ -14,7 +14,11 @@ async function bootstrap() {
 
   // Enable CORS for frontend on port 3001
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      process.env.FRONTEND_URL,
+    ].filter(Boolean),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],

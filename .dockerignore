@@ -1,0 +1,10 @@
+node_modules
+dist
+.git
+.gitignore
+.env.example
+*.md
+test
+coverage
+.eslintrc.js
+eslint.config.mjs

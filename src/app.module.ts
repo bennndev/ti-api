@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
@@ -27,6 +27,7 @@ import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthGuard } from './guards/auth.guard';
 import { PermissionsGuard } from './guards/permissions.guard';
 import { CustomThrottlerGuard } from './guards/custom-throttle.guard';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 
 @Module({
   controllers: [AppController],
@@ -36,6 +37,7 @@ import { CustomThrottlerGuard } from './guards/custom-throttle.guard';
     { provide: APP_GUARD, useClass: CustomThrottlerGuard },
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_GUARD, useClass: PermissionsGuard },
+    { provide: APP_FILTER, useClass: HttpExceptionFilter },
   ],
   imports: [
     ThrottlerModule.forRoot([
