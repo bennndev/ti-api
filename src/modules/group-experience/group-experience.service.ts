@@ -57,6 +57,8 @@ export class GroupExperienceService {
       group: { connect: { id: dto.groupId } },
       experience: { connect: { id: dto.experienceId } },
       mandatory: dto.mandatory,
+      enabled: dto.enabled,
+      dueDate: dto.dueDate ? new Date(dto.dueDate) : undefined,
     });
   }
 

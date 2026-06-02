@@ -152,6 +152,8 @@ const roles = [
       'addressable:read', 'addressable:update',
       // Role (read only)
       'role:read',
+      // User (read only)
+      'user:read',
       // Course/Department/Specialty (read only - browse structure)
       'course:read',
       'department:read',

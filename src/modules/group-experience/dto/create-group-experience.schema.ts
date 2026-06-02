@@ -7,7 +7,9 @@ export const deviceTypes = ['VR_HEADSET', 'DESKTOP', 'MOBILE', 'TABLET'] as cons
 export const createGroupExperienceSchema = z.object({
   groupId: z.number().int().positive(),
   experienceId: z.number().int().positive(),
-  mandatory: z.boolean().default(false),
+  mandatory: z.boolean().optional().default(false),
+  enabled: z.boolean().optional().default(true),
+  dueDate: z.string().datetime().optional(),
 });
 
 export class CreateGroupExperienceDto extends createZodDto(createGroupExperienceSchema) {}

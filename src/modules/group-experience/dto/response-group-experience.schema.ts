@@ -8,6 +8,8 @@ export const groupExperienceResponseSchema = z.object({
   attempts: z.number().int(),
   status: z.enum(['PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED']),
   mandatory: z.boolean(),
+  enabled: z.boolean(),
+  dueDate: z.string().datetime().nullable(),
   startedAt: z.string().datetime().nullable(),
   completedAt: z.string().datetime().nullable(),
   timeSpent: z.number().int().nullable(),

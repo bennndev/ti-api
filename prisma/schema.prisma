@@ -72,6 +72,7 @@ model User {
   phones    Phone[]
   emails    Email[]
   groups    User_Group[]
+  createdGroups Group[]
   activityLogs Activity_Log[]
   accounts  Account[]
   sessions  Session[]
@@ -314,6 +315,7 @@ model Group {
   id        Int      @id @default(autoincrement())
   orgId     Int
   courseId  Int
+  createdBy String?
   name      String   @db.VarChar(50)
   code      String   @unique @db.VarChar(20)
   status    GroupStatus @default(ACTIVE)
@@ -326,6 +328,7 @@ model Group {
 
   org              Organization      @relation(fields: [orgId], references: [id])
   course           Course            @relation(fields: [courseId], references: [id])
+  createdByUser    User?             @relation(fields: [createdBy], references: [id])
   users            User_Group[]
   groupExperiences Group_Experience[]
   xrSessions       XR_Session[]
@@ -373,6 +376,8 @@ model Group_Experience {
   attempts      Int       @default(0)
   status        GroupExperienceStatus @default(PENDING)
   mandatory     Boolean   @default(false)
+  enabled       Boolean   @default(true)
+  dueDate       DateTime?
 
   startedAt     DateTime?
   completedAt   DateTime?

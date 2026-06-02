@@ -7,25 +7,29 @@ import { Prisma } from '@/generated/prisma/client';
 export class GroupService {
   private readonly logger = new Logger(GroupService.name);
 
-  constructor(private readonly groupRepository: GroupRepository) {}
+  constructor(
+    private readonly groupRepository: GroupRepository,
+  ) {}
 
   async findAll(params: {
     page?: number;
     pageSize?: number;
     orgId?: number;
     courseId?: number;
+    instructorId?: string;
     status?: string;
   }): Promise<{
     data: any[];
     meta: { page: number; pageSize: number; total: number; totalPages: number };
   }> {
-    const { page = 1, pageSize = 20, orgId, courseId, status } = params;
+    const { page = 1, pageSize = 20, orgId, courseId, instructorId, status } = params;
     const skip = (page - 1) * pageSize;
 
     const where: Prisma.GroupWhereInput = {};
     if (orgId !== undefined) where.orgId = orgId;
     if (courseId !== undefined) where.courseId = courseId;
     if (status !== undefined) where.status = status as any;
+    if (instructorId !== undefined) where.createdBy = instructorId;
 
     const { data, total } = await this.groupRepository.findMany({
       skip,
@@ -52,8 +56,9 @@ export class GroupService {
     return group;
   }
 
-  async create(dto: CreateGroupDto): Promise<any> {
+  async create(dto: CreateGroupDto, userId: string): Promise<any> {
     return this.groupRepository.create({
+      createdByUser: { connect: { id: userId } },
       org: { connect: { id: dto.orgId } },
       course: { connect: { id: dto.courseId } },
       name: dto.name,
