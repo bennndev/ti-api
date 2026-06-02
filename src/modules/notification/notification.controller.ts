@@ -6,12 +6,15 @@ import {
   Param,
   HttpCode,
   HttpStatus,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { NotificationService } from './notification.service';
 import { UpdateNotifPrefDto } from './dto/update-notif-pref.schema';
 import { RequirePermissions } from '@/decorators/permissions.decorator';
 import { Permission } from '@/modules/role/permissions.enum';
+import { CurrentUser } from '@/decorators/current-user.decorator';
+import type { AuthenticatedRequest } from '@/guards/auth.guard';
 
 @ApiTags('notification-preferences')
 @Controller('users')
@@ -31,16 +34,20 @@ export class NotificationController {
 
   /**
    * PATCH /users/:id/notification-preferences
-   * Upsert notification preferences for a user
+   * Upsert notification preferences (only for self)
    */
-  @RequirePermissions([Permission.USER_UPDATE])
+  @RequirePermissions([Permission.USER_READ])
   @Patch(':id/notification-preferences')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse()
   async upsert(
     @Param('id') id: string,
     @Body() body: UpdateNotifPrefDto,
+    @CurrentUser() currentUser: AuthenticatedRequest['user'],
   ) {
+    if (currentUser.id !== id) {
+      throw new ForbiddenException('Can only manage your own notification preferences');
+    }
     return this.notificationService.upsert(id, body);
   }
 }
