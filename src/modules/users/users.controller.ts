@@ -72,7 +72,7 @@ export class UsersController {
     return this.usersService.findById(id);
   }
 
-  @RequirePermissions([Permission.USER_UPDATE])
+  @RequirePermissions([Permission.USER_READ])
   @Patch(':id')
   @ApiOkResponse({ type: UserResponseDto })
   async update(

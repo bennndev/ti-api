@@ -179,8 +179,21 @@ export class UsersService {
       throw new NotFoundException(`User #${id} not found`);
     }
 
+    const isSelf = currentUser.id === id;
+    const adminFieldKeys: (keyof UpdateUserDto)[] = [
+      'name', 'lastName', 'username', 'documentType', 'documentNumber', 'status',
+    ];
+    const hasAdminFields = adminFieldKeys.some((k) => dto[k] !== undefined);
+
+    // Only super_admin (1) or org_admin (2) can update admin fields or other users
+    if (!isSelf || hasAdminFields) {
+      if (currentUser.roleId !== 1 && currentUser.roleId !== 2) {
+        throw new ForbiddenException('Cannot update admin fields or other users');
+      }
+    }
+
     // Users can only update users in their org (except superadmin)
-    if (user.orgId !== currentUser.orgId && currentUser.roleId !== 1) {
+    if (!isSelf && user.orgId !== currentUser.orgId && currentUser.roleId !== 1) {
       throw new ForbiddenException('Cannot update users from other organizations');
     }
 
