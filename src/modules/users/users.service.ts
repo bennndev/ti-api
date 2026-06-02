@@ -43,6 +43,7 @@ export class UsersService {
         position: dto.position,
         phone: dto.phone,
         specialtyId: dto.specialtyId,
+        bio: dto.bio,
       },
     });
 
@@ -222,6 +223,7 @@ export class UsersService {
       position: user.position ?? null,
       phone: user.phone ?? null,
       specialtyId: user.specialtyId ?? null,
+      bio: user.bio ?? null,
       specialty: user.specialty ?? null,
       emailVerified: user.emailVerified ?? false,
       status: user.status ?? true,

@@ -48,6 +48,7 @@ export const auth = betterAuth({
       position: { type: 'string', required: false },
       phone: { type: 'string', required: false },
       specialtyId: { type: 'number', required: false },
+      bio: { type: 'string', required: false },
     },
   },
   plugins: [bearer()],

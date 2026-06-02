@@ -15,6 +15,7 @@ export const userResponseSchema = z.object({
   position: z.string().nullable(),
   phone: z.string().nullable(),
   specialtyId: z.number().int().nullable(),
+  bio: z.string().nullable(),
   specialty: z.object({
     id: z.number(),
     code: z.string(),

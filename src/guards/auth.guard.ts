@@ -51,6 +51,7 @@ export class AuthGuard implements CanActivate {
         position: true,
         phone: true,
         specialtyId: true,
+        bio: true,
         specialty: { select: { id: true, code: true, name: true } },
       },
     });
