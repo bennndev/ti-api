@@ -1,4 +1,12 @@
-import { Controller, Post, Get, Req, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Req,
+  Body,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import type { IncomingHttpHeaders } from 'http';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
@@ -45,10 +53,7 @@ export class AuthController {
   }
 
   @Post('change-password')
-  async changePassword(
-    @Req() req: Request,
-    @Body() body: ChangePasswordDto,
-  ) {
+  async changePassword(@Req() req: Request, @Body() body: ChangePasswordDto) {
     return this.authService.changePassword(
       req.headers as unknown as IncomingHttpHeaders,
       body,
@@ -59,5 +64,23 @@ export class AuthController {
   @ApiOkResponse({ type: UserResponseDto })
   me(@CurrentUser() user: AuthenticatedRequest['user']) {
     return user;
+  }
+
+  @Post('token')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'JWT token for external clients',
+    schema: {
+      type: 'object',
+      properties: {
+        token: { type: 'string' },
+        expiresAt: { type: 'string', format: 'date-time' },
+      },
+    },
+  })
+  async exchangeToken(@Req() req: Request) {
+    return this.authService.tokenExchange(
+      req.headers as unknown as IncomingHttpHeaders,
+    );
   }
 }

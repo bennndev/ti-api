@@ -5,8 +5,11 @@ import {
   ExecutionContext,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import type { Request } from 'express';
 import { auth } from '@/lib/auth';
 import { fromNodeHeaders } from 'better-auth/node';
+import { verifyJwt } from '@/lib/jwt';
+import type { JwtPayload } from '@/lib/jwt';
 import { IS_PUBLIC_KEY } from '@/decorators/public.decorator';
 import { PrismaService } from '@/lib/prisma';
 
@@ -26,46 +29,102 @@ export class AuthGuard implements CanActivate {
     if (isPublic) return true;
 
     const request = context.switchToHttp().getRequest();
+
     const session = await auth.api.getSession({
-      headers: fromNodeHeaders(request.headers),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      headers: fromNodeHeaders(request.headers as Record<string, string>),
     });
 
-    if (!session) {
-      throw new UnauthorizedException('No active session');
+    if (session) {
+      const user = await this.prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          emailVerified: true,
+          orgId: true,
+          roleId: true,
+          username: true,
+          documentType: true,
+          documentNumber: true,
+          lastName: true,
+          position: true,
+          phone: true,
+          specialtyId: true,
+          bio: true,
+          specialty: { select: { id: true, code: true, name: true } },
+        },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      request.user = {
+        ...session.user,
+        ...user,
+      };
+
+      return true;
     }
 
-    // Fetch user from DB to get roleId and orgId (Better Auth session doesn't include custom fields)
-    const user = await this.prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        emailVerified: true,
-        orgId: true,
-        roleId: true,
-        username: true,
-        documentType: true,
-        documentNumber: true,
-        lastName: true,
-        position: true,
-        phone: true,
-        specialtyId: true,
-        bio: true,
-        specialty: { select: { id: true, code: true, name: true } },
-      },
-    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const jwtPayload = await this.extractAndVerifyJwt(request);
 
-    if (!user) {
-      throw new UnauthorizedException('User not found');
+    if (jwtPayload) {
+      const user = await this.prisma.user.findUnique({
+        where: { id: jwtPayload.sub },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          emailVerified: true,
+          orgId: true,
+          roleId: true,
+          username: true,
+          documentType: true,
+          documentNumber: true,
+          lastName: true,
+          position: true,
+          phone: true,
+          specialtyId: true,
+          bio: true,
+          specialty: { select: { id: true, code: true, name: true } },
+        },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      request.user = {
+        ...user,
+        emailVerified: user.emailVerified ?? false,
+      };
+
+      return true;
     }
 
-    request.user = {
-      ...session.user,
-      ...user,
-    };
+    throw new UnauthorizedException('No active session');
+  }
 
-    return true;
+  private async extractAndVerifyJwt(
+    request: Request,
+  ): Promise<JwtPayload | null> {
+    const authHeader = request.headers.authorization;
+    if (!authHeader) return null;
+
+    const parts = authHeader.split(' ');
+    if (parts.length !== 2) return null;
+
+    const [scheme, token] = parts;
+    if (!scheme || !token) return null;
+    if (scheme.toLowerCase() !== 'bearer') return null;
+
+    return verifyJwt(token);
   }
 }
 

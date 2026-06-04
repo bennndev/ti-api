@@ -2,7 +2,7 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { XrAuthRepository } from './xr-auth.repository';
 import { ValidatePinDto } from './dto';
 import { PrismaService } from '@/lib/prisma';
-import { SignJWT } from 'jose';
+import { signJwt } from '@/lib/jwt';
 
 @Injectable()
 export class XrAuthService {
@@ -20,7 +20,9 @@ export class XrAuthService {
 
   async generatePin(userId: string): Promise<string> {
     const pin = this.createRandomPin();
-    const expiresAt = new Date(Date.now() + this.PIN_EXPIRY_MINUTES * 60 * 1000);
+    const expiresAt = new Date(
+      Date.now() + this.PIN_EXPIRY_MINUTES * 60 * 1000,
+    );
 
     await this.xrAuthRepository.createUnchecked({
       userId,
@@ -28,15 +30,25 @@ export class XrAuthService {
       expiresAt,
     });
 
-    this.logger.log(`PIN generated for user ${userId}, expires at ${expiresAt}`);
+    this.logger.log(
+      `PIN generated for user ${userId}, expires at ${expiresAt}`,
+    );
     return pin;
   }
 
-  async validatePinAndGetToken(dto: ValidatePinDto): Promise<{ token: string; expiresAt: Date; user: { id: string; email: string; name: string | null; orgId: number | null; roleId: number | null } }> {
+  async validatePinAndGetToken(dto: ValidatePinDto): Promise<{
+    token: string;
+    expiresAt: Date;
+    user: {
+      id: string;
+      email: string;
+      name: string | null;
+      orgId: number | null;
+      roleId: number | null;
+    };
+  }> {
     // Find any valid PIN matching (userId from PIN record, not provided externally)
-    const pinRecord = await this.xrAuthRepository.findValidPin(
-      dto.pin,
-    );
+    const pinRecord = await this.xrAuthRepository.findValidPin(dto.pin);
 
     if (!pinRecord) {
       this.logger.warn(`Invalid or expired PIN attempted`);
@@ -62,22 +74,20 @@ export class XrAuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    // Generate JWT for XR
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'xr-secret-key');
+    const expiresInMs = 24 * 60 * 60 * 1000; // 24 hours
+    const expiresAt = new Date(Date.now() + expiresInMs);
 
-    const token = await new SignJWT({
-      sub: user.id,
-      email: user.email,
-      name: user.name,
-      orgId: user.orgId,
-      roleId: user.roleId,
-      type: 'xr',
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime(expiresAt)
-      .setIssuedAt()
-      .sign(secret);
+    const token = await signJwt(
+      {
+        sub: user.id,
+        email: user.email,
+        name: user.name,
+        orgId: user.orgId,
+        roleId: user.roleId,
+        type: 'xr',
+      },
+      expiresInMs,
+    );
 
     return {
       token,
