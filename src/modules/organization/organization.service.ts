@@ -1,12 +1,8 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
 import { OrganizationRepository } from './organization.repository';
 import type { CreateOrganizationDto } from './dto/create-organization.schema';
 import type { UpdateOrganizationDto } from './dto/update-organization.schema';
+import { Prisma } from '@/generated/prisma/client';
 
 @Injectable()
 export class OrganizationService {
@@ -45,15 +41,22 @@ export class OrganizationService {
   async findAll(params: {
     page?: number;
     pageSize?: number;
+    search?: string;
     status?: boolean;
   }) {
     const page = params.page ?? 1;
     const pageSize = params.pageSize ?? 20;
 
+    const where: Prisma.OrganizationWhereInput = {};
+    if (params.search) {
+      where.name = { contains: params.search, mode: 'insensitive' };
+    }
+    if (params.status !== undefined) where.status = params.status;
+
     const { data, total } = await this.organizationRepository.findMany({
       skip: (page - 1) * pageSize,
       take: pageSize,
-      where: params.status !== undefined ? { status: params.status } : undefined,
+      where,
     });
 
     const totalPages = Math.ceil(total / pageSize);

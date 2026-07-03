@@ -38,15 +38,18 @@ export class OrganizationController {
   @ApiOkResponse({ type: OrganizationResponseDto, isArray: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'pageSize', required: false, type: Number })
+  @ApiQuery({ name: 'search', required: false, type: String })
   @ApiQuery({ name: 'status', required: false, type: Boolean })
   async findAll(
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
+    @Query('search') search?: string,
     @Query('status') status?: string,
   ) {
     return this.organizationService.findAll({
       page: page ? Number(page) : undefined,
       pageSize: pageSize ? Number(pageSize) : undefined,
+      search,
       status: status !== undefined ? status === 'true' : undefined,
     });
   }
