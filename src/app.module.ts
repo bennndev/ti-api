@@ -25,6 +25,7 @@ import { ActivityLogModule } from './modules/activity-log/activity-log.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { ContactModule } from './modules/contact/contact.module';
 import { DeviceModule } from './modules/device/device.module';
+import { MessagesModule } from './modules/messages/messages.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthGuard } from './guards/auth.guard';
 import { PermissionsGuard } from './guards/permissions.guard';
@@ -60,6 +61,7 @@ import { PermissionsGuard } from './guards/permissions.guard';
     NotificationModule,
     ContactModule,
     DeviceModule,
+    MessagesModule,
     PrismaModule,
   ],
 })
